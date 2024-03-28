@@ -1,11 +1,5 @@
 
-
-
-
-
-
-//export const LINK = "http://192.168.188.100/BROKER/2024/spongecoinmart.online/";
-export const LINK = "https://spongecoinmart.online/";
+export const LINK = "https://xyz";
 
 export const API = LINK + "api/v1/";
 
