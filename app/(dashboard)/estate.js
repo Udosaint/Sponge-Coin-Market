@@ -1,18 +1,18 @@
-import { View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, ScrollView, Alert, FlatList } from 'react-native'
+import { View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, ScrollView, Alert, FlatList, Image } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import MyLoading from '../../components/MyLoading'
 import { useAuth } from '../../context/authcontext';
-import { GetAllCoin, GetEarningBalance, GetPlan, UserInvestment, UserWithdrawal, formatCurrency } from '../../Api/ApiActions';
-import { router, useLocalSearchParams } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+import { GetEarningBalance, GetEstate, UserEstateInvestment, UserInvestment, formatCurrency } from '../../Api/ApiActions';
+import { router } from 'expo-router';
 import ActionSheet from 'react-native-actions-sheet';
+import { EstateImageLink } from '../../Api/MyApi';
 
-export default function Invest() {
+export default function Estate() {
 
     const [loading, setLoading] = useState(false);
     const { user } = useAuth();
     const [balance, setBalance] = useState();
-    const [plan, setPlan] = useState();
+    const [estate, setEstate] = useState();
 
 
 
@@ -22,9 +22,9 @@ export default function Invest() {
     const [myinvest, setMyinvest] = useState([]);
 
 
-    const HandleInvestment = async (id) => {
+    const HandleInvestment = async (id, durations) => {
         if (!amountRef.current) {
-            Alert.alert("Investment", "Please enter the amount to invest");
+            Alert.alert("Real Estate", "Please enter the amount to invest");
             return;
         }
 
@@ -32,19 +32,19 @@ export default function Invest() {
         showinvestmodal.current?.hide();
 
         setLoading(true);
-        const response = await UserInvestment(user.userid, amountRef.current, id, user.currency);
+        const response = await UserEstateInvestment(user.userid, amountRef.current, id, durations);
         setLoading(false);
 
         console.log(response);
 
         if (response.err) {
-            Alert.alert("Investment", "An error occured. Check your network and try again");
+            Alert.alert("Real Estate", "An error occured. Check your network and try again");
             return;
         } else if (response.status == "error") {
-            Alert.alert("Investment", response.message);
+            Alert.alert("Real Estate", response.message);
             return;
         } else if (response.status == "success") {
-            Alert.alert("Investment", response.message, [
+            Alert.alert("Real Estate", response.message, [
                 {
                     text: 'OK',
                     onPress: () => router.push('(tabs)'),
@@ -58,10 +58,13 @@ export default function Invest() {
     }
 
     useEffect(() => {
-        getPlan();
+        getEstate();
         getBalance();
-    }, [getPlan]);
+    }, [getEstate]);
 
+
+
+    // show the portfolio balance to carryout the investment
     const getBalance = async () => {
         setLoading(true);
         const response = await GetEarningBalance(user.userid, user.currency);
@@ -70,10 +73,10 @@ export default function Invest() {
         //console.log(response.tradebal);
 
         if (response.err) {
-            Alert.alert("Investment", "An error occured. Check your network and try again");
+            Alert.alert("Real Estate", "An error occured. Check your network and try again");
             return;
         } else if (response.status == "error") {
-            Alert.alert("Investment", response.message);
+            Alert.alert("Real Estate", response.message);
             return;
         } else if (response.status == "success") {
             setBalance(response.tradebal);
@@ -81,22 +84,22 @@ export default function Invest() {
         }
     }
 
-    const getPlan = async () => {
+    const getEstate = async () => {
         setLoading(true);
-        const response = await GetPlan();
+        const response = await GetEstate();
         setLoading(false);
 
         //console.log(response.data);
 
         if (response.err) {
-            Alert.alert("Investment", "An error occured. Check your network and try again");
+            Alert.alert("Real Estate", "An error occured. Check your network and try again");
             return;
         } else if (response.status == "error") {
-            Alert.alert("Investment", response.message);
+            Alert.alert("Real Estate", response.message);
             return;
         } else if (response.status == "success") {
             const dataArray = Object.entries(response.data).map(([index, value]) => ({ index, value }));
-            setPlan(dataArray);
+            setEstate(dataArray);
             return;
         }
     }
@@ -104,7 +107,7 @@ export default function Invest() {
 
     //this handle the opening of the modal
 
-    const getinvest = (invest) => {
+    const getrealestate = (invest) => {
         showinvestmodal.current?.show();
         setMyinvest(invest);
 
@@ -126,7 +129,7 @@ export default function Invest() {
                         <FlatList
                             // refreshControl={<RefreshControl refreshing={false} onRefresh={depositHistory} />}
                             showsHorizontalScrollIndicator={false}
-                            data={plan}
+                            data={estate}
                             keyExtractor={item => item.index}
                             className="overflow-visible"
                             contentContainerStyle={{ paddingTop: 15 }}
@@ -136,36 +139,29 @@ export default function Invest() {
                                         key={item.value.id}
                                         onPress={() => viewdata(item.value)}
                                         className="p-3 px-2 rounded-lg drop-shadow-md
-                                        bg-teal-800 dark:bg-zinc-800 shadow-black mb-2"
+                                        bg-teal-800 dark:bg-zinc-800 shadow-black mb-3"
+
                                     >
-                                        <Text className="font-semibold text-2xl text-yellow-500" > {item.value.name} PLAN</Text>
+                                        <Image
+
+                                            source={{ uri: EstateImageLink + item.value.image }}
+                                            className=" h-40 -mt-1 mb-3 rounded-lg"
+                                        />
+                                        <Text className="font-semibold text-2xl text-center items-center text-yellow-500" > {item.value.estate_name}</Text>
                                         <View className="flex-row items-center justify-between  mt-5 space-x-2">
                                             <View className='flex-1 items-center bg-purple-300 p-4'>
                                                 <Text className="font-semibold text-md " > Minimum Amount</Text>
-                                                <Text className="font-semibold text-lg " > {user.symbol + formatCurrency(item.value.min)}</Text>
+                                                <Text className="font-semibold text-lg " > {user.symbol + formatCurrency(item.value.amount)}</Text>
                                             </View>
 
                                             <View className='flex-1 items-center bg-purple-300 p-4 '>
-                                                <Text className="font-semibold text-md " > Maximum Amount</Text>
-                                                <Text className="font-semibold text-lg " > {user.symbol + formatCurrency(item.value.max)}</Text>
+                                                <Text className="font-semibold text-md " > ROI</Text>
+                                                <Text className="font-semibold text-lg " > {item.value.roi}%</Text>
                                             </View>
 
                                         </View>
 
-                                        <View className="flex-row items-center justify-between  mt-5 space-x-2">
-                                            <View className='flex-1 items-center bg-purple-300 p-4'>
-                                                <Text className="font-semibold text-md " > Duration</Text>
-                                                <Text className="font-semibold text-lg " > {item.value.duration + " Days"}</Text>
-                                            </View>
-
-                                            <View className='flex-1 items-center bg-purple-300 p-4 '>
-                                                <Text className="font-semibold text-md " > Returns</Text>
-                                                <Text className="font-semibold text-lg " > {item.value.returns}%</Text>
-                                            </View>
-
-                                        </View>
-
-                                        <TouchableOpacity onPress={() => getinvest(item.value)} className="bg-purple-600 p-3 rounded-lg mt-5" >
+                                        <TouchableOpacity onPress={() => getrealestate(item.value)} className="bg-purple-600 p-3 rounded-lg mt-5" >
                                             <Text className="text-center text-xl font-extrabold text-white ">INVEST</Text>
                                         </TouchableOpacity>
 
@@ -186,11 +182,11 @@ export default function Invest() {
                         >
                             {
                                 <View className="px-5 p-3 mb-5">
-                                    <Text className="font-semibold text-lg uppercase text-center text-yellow-500"> {myinvest.name} plan</Text>
+                                    <Text className="font-semibold text-lg uppercase text-center text-yellow-500"> Real Estate Investment</Text>
 
                                     <View className="flex-column pt-3 px-5 mb-4">
                                         <Text className="text-md font-semibold text-center">
-                                            You are about to make an investment, please confirm the amount to invest
+                                            You are about to invest in {myinvest.estate_name} please confirm your investment amount and proceed
                                         </Text>
                                     </View>
 
@@ -211,7 +207,7 @@ export default function Invest() {
                                     </View>
 
 
-                                    <TouchableOpacity onPress={() => HandleInvestment(myinvest.id)} className='bg-purple-600 p-3 rounded-lg mt-5 items-center'>
+                                    <TouchableOpacity onPress={() => HandleInvestment(myinvest.main_id, myinvest.duration)} className='bg-purple-600 p-3 rounded-lg mt-5 items-center'>
                                         <Text className="text-lg text-white font-semibold uppercase">confirm investment</Text>
                                     </TouchableOpacity>
                                 </View>

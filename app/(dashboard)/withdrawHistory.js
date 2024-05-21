@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Ionicons } from '@expo/vector-icons'
 import { Link, Navigator, router, useNavigation } from 'expo-router'
 import MyLoading from '../../components/MyLoading'
-import { UserWithdrawalHistory } from '../../Api/ApiActions'
+import { UserWithdrawalHistory, formatCurrency } from '../../Api/ApiActions'
 import { useAuth } from '../../context/authcontext'
 
 
@@ -101,13 +101,13 @@ export default function withdrawHistory() {
                                                 <Ionicons name="arrow-up-circle-outline" size={30} color="red" />
                                                 <View className="items-start">
                                                     <Text className="font-semibold text-lg " >{item.value.crypto_name}</Text>
-                                                    <Text className="font-semibold text-md " >{item.value.wittype}</Text>
+                                                    <Text className="font-semibold text-md " >{item.value.date_added}</Text>
                                                 </View>
 
                                             </View>
 
                                             <View className="items-end text-end">
-                                                <Text className="font-semibold text-base items-end" >{user.symbol + item.value.amount}</Text>
+                                                <Text className="font-semibold text-base items-end" >{user.symbol + formatCurrency(item.value.finalamount)}</Text>
                                             </View>
 
                                         </View>
@@ -148,7 +148,7 @@ export default function withdrawHistory() {
                                 <View className=" bg-zinc-100 p-5 rounded-lg mt-5">
 
                                     <View className="mb-4">
-                                        <Text className="font-extrabold text-lg">{user.symbol + showmodal.amount}</Text>
+                                        <Text className="font-extrabold text-lg">{user.symbol + formatCurrency(showmodal.finalamount)}</Text>
                                         <View className="border-b-2 border-blue-800 mt-2" />
                                     </View>
                                     <View className="mb-4">
@@ -157,8 +157,8 @@ export default function withdrawHistory() {
                                         <View className="border-b-2 border-blue-800 mt-2" />
                                     </View>
                                     <View className="mb-4">
-                                        <Text>Withdrawal Type</Text>
-                                        <Text className="font-extrabold text-lg">{showmodal.wittype}</Text>
+                                        <Text>Wallet Address</Text>
+                                        <Text className="font-extrabold text-lg">{showmodal.wallet_addr}</Text>
                                         <View className="border-b-2 border-blue-800 mt-2" />
                                     </View>
                                     <View className="mb-4">
@@ -187,7 +187,7 @@ export default function withdrawHistory() {
 
                                 </View>
 
-                                <TouchableOpacity onPress={closemodal} className='bg-blue-500 p-3 rounded-lg mt-5 items-center'>
+                                <TouchableOpacity onPress={closemodal} className='bg-purple-600 p-3 rounded-lg mt-5 items-center'>
                                     <Text className="text-lg text-white font-bold ">Close</Text>
                                 </TouchableOpacity>
                             </View>

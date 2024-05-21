@@ -1,11 +1,10 @@
 import { View, Text, Image, TouchableOpacity, FlatList, ScrollView, Alert, RefreshControl } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { StatusBar } from 'expo-status-bar'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Ionicons, MaterialIcons } from '@expo/vector-icons'
 import { router } from 'expo-router'
 import { useAuth } from '../../../context/authcontext'
-import { UserCryptoBalance, UserDashboard } from '../../../Api/ApiActions'
+import { UserDashboard } from '../../../Api/ApiActions'
 import MyLoading from '../../../components/MyLoading'
 
 export default function index() {
@@ -13,9 +12,7 @@ export default function index() {
     const [loading, setloading] = useState(false);
     const [balance, setBalance] = useState("0.00");
     const [earning, setEarning] = useState();
-    const [deposit, setDeposit] = useState("0.00");
-    const [withdraw, setWithdraw] = useState("0.00");
-    const [invest, setInvest] = useState("0.00");
+    const [earn, setEarn] = useState([]);
     const { user } = useAuth();
 
     useEffect(() => {
@@ -31,9 +28,10 @@ export default function index() {
         const response = await UserDashboard(user.userid, user.currency);
 
         setloading(false);
-        //console.log(response.earning);
+        //console.log(response);
 
         if (response.err) {
+            console.log(response.err);
             Alert.alert("Dashboard", "An error occured. Check your network and try again", [
                 {
                     text: 'Ok',
@@ -45,52 +43,16 @@ export default function index() {
             setBalance(response.totalbal);
             const dataArray = Object.entries(response.earning).map(([key, value]) => ({ key, value }));
             setEarning(dataArray);
-            setDeposit(response.deposit);
-            setWithdraw(response.withdraw);
-            setInvest(response.invest);
-            //console.log(dataArray);
-            return;
-        } else {
-            Alert.alert("Dashboard", "An error occured, pull down to refresh", [
-                {
-                    text: 'Ok',
-                    onPress: () => { getDashboardBalance }
-                },
-            ]);
+            setEarn(response.earning);
+
             return;
         }
+        console.log(earn);
+        console.log("error occured");
     }
 
 
 
-    const getCrptoBalance = async () => {
-        setloading(true);
-
-        const response = await UserCryptoBalance(user.userid, user.currency);
-
-
-        //console.log(response.earning);
-
-        if (response.err) {
-            Alert.alert("Dashboard", "An error occured. Check your network and try again", [
-                {
-                    text: 'Ok',
-                    onPress: () => { getDashboardBalance }
-                },
-            ]);
-            return;
-        } else if (response.status) {
-            setBalance(balance);
-            setloading(false);
-            return;
-        } else {
-            setBalance(balance);
-            setloading(false);
-            return;
-        }
-    }
-
-    //console.log(earning);
 
     const goDeposit = () => {
         router.push('../deposit');
@@ -101,10 +63,14 @@ export default function index() {
     }
 
 
+
+
+
+
     return (
         <>
-            <View>
-                <SafeAreaView className="flex p-2">
+            <View className="bg-purple-50 flex-1">
+                <SafeAreaView className="flex p-3">
 
                     <ScrollView
                         refreshControl={
@@ -116,19 +82,20 @@ export default function index() {
 
                         <View className="flex-row items-center justify-between mb-5">
                             <Image
+                                style={{ width: 160, height: 30 }}
                                 source={require('../../../assets/images/sp_icon.png')}
                                 className="w-12 h-14"
                             />
-                            <TouchableOpacity className="text-blue-200 rounded-lg p-2" >
-                                <MaterialIcons name="notifications-on" size={24} color="black" />
+                            <TouchableOpacity className="text-blue-200 dark:text-white rounded-lg p-2" >
+                                <MaterialIcons name="notifications-on" size={24} color="purple" />
                             </TouchableOpacity>
                         </View>
 
                         <View className="px-3 mb-5">
-                            <Text className="font-semibold text-xl">Hi,  {user.username} 👋</Text>
+                            <Text className="font-semibold text-xl dark:text-white">Hi,  {user.username} 👋</Text>
                         </View>
 
-                        <View className=" bg-slate-900 relative rounded-xl h-40 p-5 shadow-lg shadow-blue-900 sh">
+                        <View className=" bg-purple-900 dark:bg-purple-800 relative rounded-xl h-40 p-5 shadow-lg shadow-blue-900 sh">
                             <Image
                                 source={require('../../../assets/images/coins1.png')}
                                 className="absolute w-full opacity-10"
@@ -137,26 +104,26 @@ export default function index() {
                             />
                             <View className="flex">
                                 <View className=" mb-3">
-                                    <Text className="text-white  text-lg font-bold mb-1">Balance</Text>
+                                    <Text className="text-white  text-lg font-bold mb-1">Total Balance</Text>
                                     <View className="flex-row items-center justify-between">
-                                        <Text className="text-white text-xl font-light">{user.symbol + balance}</Text>
-                                        <Ionicons name="reload-circle" onPress={getCrptoBalance} size={30} color="white" />
+                                        <Text className="text-white text-2xl font-light">{user.symbol + balance}</Text>
+                                        <Ionicons name="reload-circle" onPress={getDashboardBalance} size={30} color="white" />
                                     </View>
                                 </View>
                                 <View className="flex-row mb-2 gap-5">
                                     <TouchableOpacity
-                                        className="flex-row items-center bg-slate-600 rounded-full space-x-1 px-3 p-2"
+                                        className="flex-row items-center bg-slate-300 rounded-xl space-x-1 px-3 p-2"
                                         onPress={goDeposit}
                                     >
                                         <Ionicons name="add-circle" size={24} color="yellow" />
-                                        <Text className="text-base font-bold text-white">Add Money</Text>
+                                        <Text className="text-base font-bold text-purple-800">Deposit</Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity
-                                        className="flex-row space-x-1 items-center bg-slate-600 rounded-full px-3"
+                                        className="flex-row space-x-1 items-center bg-slate-300 rounded-xl px-3"
                                         onPress={gowithdraw}
                                     >
                                         <Ionicons name="arrow-up-circle" size={24} color="yellow" />
-                                        <Text className="text-base font-bold text-white">Withdraw</Text>
+                                        <Text className="text-base font-bold text-purple-800">Withdraw</Text>
                                     </TouchableOpacity>
                                 </View>
 
@@ -172,9 +139,9 @@ export default function index() {
                                 horizontal
                                 renderItem={({ item }) => {
                                     return (
-                                        <View style={{ backgroundColor: 'rgba(0,0,0,0.5)' }} className="p-5 w-60 px-5 rounded-lg mr-2 drop-shadow-md shadow-black">
-                                            <Text className="font-semibold text-lg p-2" >{item.value.title}</Text>
-                                            <Text className="font-normal px-2 text-yellow-200" >{user.symbol + item.value.amount}</Text>
+                                        <View style={{ backgroundColor: '#989FCE' }} className=" p-5 w-60 px-5 rounded-lg mr-2 drop-shadow-md shadow-black">
+                                            <Text className="font-semibold text-xl p-2 " >{item.value.title}</Text>
+                                            <Text className="font-bold px-2 text-lg text-yellow-200" >{user.symbol + item.value.amount}</Text>
                                         </View>
 
                                     )
@@ -182,22 +149,49 @@ export default function index() {
                             />
 
                         </View>
-                        <Text className="text-black mt-5 font-extrabold mb-2 text-base capitalize">Account Summary</Text>
+                        <Text className="text-black mt-5 font-extrabold mb-2 text-base capitalize">Other Actions</Text>
 
 
-                        <View className=" bg-slate-300 px-4  p-4  rounded shadow-md shadow-blue-600">
+                        <View className="flex-1">
+                            <View className="flex-row gap-3 mb-3">
+                                <TouchableOpacity
+                                    onPress={() => router.push('../invest')}
+                                    className="flex-1 w-1/2 h-24 p-5 rounded-xl bg-purple-200 shadow-md items-center justify-center">
+                                    <Image
+                                        source={require('../../../assets/images/invest.png')}
+                                        className="w-12 h-14 mt-4"
+                                    />
+                                    <Text className="text-black font-extrabold text-xl mb-4">Investment</Text>
+                                </TouchableOpacity>
 
-                            <View className="flex mb-6 mt-4 items-center justify-between flex-row border-b-2 border-spacing-5 border-sky-800">
-                                <Text className="text-black font-extrabold">Total Deposit</Text>
-                                <Text className="text-black font-extrabold">{user.symbol + deposit}</Text>
+                                <TouchableOpacity
+                                    onPress={() => router.push('../estate')}
+                                    className="flex-1 w-1/2 h-24 p-5 rounded-xl bg-purple-200 shadow-md items-center justify-center">
+                                    <Image
+
+                                        source={require('../../../assets/images/estate.png')}
+                                        className="w-12 h-14 mt-4"
+                                    />
+                                    <Text className="text-black font-extrabold text-xl mb-4">Real Estate</Text>
+                                </TouchableOpacity>
                             </View>
-                            <View className="flex mb-6 items-center justify-between flex-row border-b-2 border-spacing-5 border-sky-800">
-                                <Text className="text-black font-extrabold">Total Withdrawal</Text>
-                                <Text className="text-black font-extrabold">{user.symbol + withdraw}</Text>
-                            </View>
-                            <View className="flex mb-6 items-center justify-between flex-row border-b-2 border-spacing-5 border-sky-800">
-                                <Text className="text-black font-extrabold">Total Investment</Text>
-                                <Text className="text-black font-extrabold">{user.symbol + invest}</Text>
+                            <View className="flex-row gap-3">
+                                <TouchableOpacity
+                                    onPress={() => router.push('../transfer')}
+                                    className="flex-1 w-1/2 h-24 p-5 rounded-xl bg-purple-200 shadow-md items-center justify-center">
+                                    <Image
+                                        source={require('../../../assets/images/transfer.png')}
+                                        className="w-12 h-14 mt-4"
+                                    />
+                                    <Text className="text-black font-extrabold text-xl mb-4">Tranfer Money</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => router.push('../history')} className="flex-1 w-1/2 h-24 p-5 rounded-xl bg-purple-200 shadow-md items-center justify-center">
+                                    <Image
+                                        source={require('../../../assets/images/deposit.png')}
+                                        className="w-12 h-14 mt-4"
+                                    />
+                                    <Text className="text-black font-extrabold text-xl mb-4">Transactions</Text>
+                                </TouchableOpacity>
                             </View>
 
                         </View>

@@ -75,9 +75,9 @@ export default function _layout() {
             <Tabs.Screen
                 name="wallets"
                 options={{
-                    title: 'Wallets',
+                    title: 'Assets',
                     headerShown: true,
-                    tabBarLabel: "Wallet",
+                    tabBarLabel: "Assets",
                     headerTintColor: MyColors.primary,
                     headerTitleAlign: 'left',
                     headerTitleStyle: {
@@ -88,7 +88,7 @@ export default function _layout() {
                 }}
             />
 
-            <Tabs.Screen
+            {/* <Tabs.Screen
                 name="history"
                 options={{
                     title: 'Transactions',
@@ -102,7 +102,7 @@ export default function _layout() {
                     },
                     //tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
                 }}
-            />
+            /> */}
 
 
             <Tabs.Screen

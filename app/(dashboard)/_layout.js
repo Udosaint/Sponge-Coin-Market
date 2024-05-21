@@ -46,7 +46,7 @@ export default function _layout() {
     }
 
     return (
-        <ThemeProvider value={colorScheme === "light" ? DarkTheme : DefaultTheme}>
+        <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
             <Stack
                 screenOptions={{
 
@@ -93,6 +93,33 @@ export default function _layout() {
                     }}
                 />
                 <Stack.Screen
+                    name="history"
+                    options={{
+                        headerTitle: "Transaction History",
+                        headerShadowVisible: false,
+                        headerTintColor: MyColors.primary,
+                        headerTitleAlign: 'center',
+                        headerTitleStyle: {
+                            fontSize: 22,
+                            fontWeight: 'bold',
+                        },
+                    }}
+                />
+
+                <Stack.Screen
+                    name="transfer"
+                    options={{
+                        headerTitle: "Tranfer Money",
+                        headerShadowVisible: false,
+                        headerTintColor: MyColors.primary,
+                        headerTitleAlign: 'center',
+                        headerTitleStyle: {
+                            fontSize: 22,
+                            fontWeight: 'bold',
+                        },
+                    }}
+                />
+                <Stack.Screen
                     name="withdraw"
                     options={{
                         headerTitle: "Withdrawal",
@@ -124,6 +151,74 @@ export default function _layout() {
                         },
                     }}
                 />
+
+                <Stack.Screen
+                    name="invest"
+                    options={{
+                        headerTitle: "Investment",
+                        headerShadowVisible: false,
+                        headerTintColor: MyColors.primary,
+                        headerTitleAlign: 'center',
+                        headerRight: () => (
+                            <TouchableOpacity onPress={() => router.push('/planHistory')} className="flex-row items-center justify-center">
+                                <Ionicons name="list" size={26} color={MyColors.primary} />
+                            </TouchableOpacity>
+                        ),
+                        headerTitleStyle: {
+                            fontSize: 22,
+                            fontWeight: 'bold',
+                        },
+                    }}
+                />
+
+
+                <Stack.Screen
+                    name="estate"
+                    options={{
+                        headerTitle: "Real Estate",
+                        headerShadowVisible: false,
+                        headerTintColor: MyColors.primary,
+                        headerTitleAlign: 'center',
+                        headerRight: () => (
+                            <TouchableOpacity onPress={() => router.push('./estateHistory')} className="flex-row items-center justify-center">
+                                <Ionicons name="list" size={26} color={MyColors.primary} />
+                            </TouchableOpacity>
+                        ),
+                        headerTitleStyle: {
+                            fontSize: 22,
+                            fontWeight: 'bold',
+                        },
+                    }}
+                />
+
+                <Stack.Screen
+                    name="estateHistory"
+                    options={{
+                        headerTitle: "Real Estate History",
+                        headerShadowVisible: false,
+                        headerTintColor: MyColors.primary,
+                        headerTitleAlign: 'center',
+                        headerTitleStyle: {
+                            fontSize: 22,
+                            fontWeight: 'bold',
+                        },
+                    }}
+                />
+
+                <Stack.Screen
+                    name="planHistory"
+                    options={{
+                        headerTitle: "Investment History",
+                        headerShadowVisible: false,
+                        headerTintColor: MyColors.primary,
+                        headerTitleAlign: 'center',
+                        headerTitleStyle: {
+                            fontSize: 22,
+                            fontWeight: 'bold',
+                        },
+                    }}
+                />
+
             </Stack>
         </ThemeProvider>
 

@@ -13,6 +13,7 @@ export default function Complete() {
 
     const [Currency, setCurrency] = useState('');
     const [country, setCountry] = useState('');
+    const [gender, setGender] = useState('');
     const [loading, setLoading] = useState(false);
     const passwordRef = useRef("");
     const confirmPasswordRef = useRef("");
@@ -35,7 +36,7 @@ export default function Complete() {
         }
 
         setLoading(true);
-        const response = await UserRegister(params.fullname, params.username, params.email, params.phone, country, Currency, passwordRef.current, confirmPasswordRef.current);
+        const response = await UserRegister(params.fullname, params.username, params.email, params.phone, gender, country, Currency, passwordRef.current, confirmPasswordRef.current);
         setLoading(false);
 
         console.log(response);
@@ -85,7 +86,7 @@ export default function Complete() {
 
                 <ScrollView>
                     <View className="px-5 flex-row">
-                        <View className="bg-blue-200 rounded-full p-2">
+                        <View className="bg-blue-200 rounded-xl p-2">
                             <TouchableOpacity onPress={goback}>
                                 <Ionicons name='arrow-back' size={24} />
                             </TouchableOpacity>
@@ -93,11 +94,32 @@ export default function Complete() {
                     </View>
 
                     <View className="flex-1 mt-5 p-5">
+                        {/* The Gender Here */}
+                        <View className="flex-column pt-3 mb-4">
+                            <Text className="text-md font-extrabold">Gender</Text>
+                            <View className="bg-slate-300 rounded-xl mt-2">
+                                <Picker
+                                    className="px-5"
+                                    mode='dialog'
+                                    dropdownIconColor={'#2196f3'}
+                                    selectionColor={'#2196f3'}
+                                    selectedValue={gender}
+                                    onValueChange={(itemValue, itemIndex) =>
+                                        setGender(itemValue)
+                                    }>
+                                    <Picker.Item label='Select Gender' value='' />
+                                    <Picker.Item label='Male' value='Male' />
+                                    <Picker.Item label='Female' value='Female' />
+                                    <Picker.Item label='Others' value='Others' />
+                                </Picker>
+                            </View>
+                        </View>
+
 
                         {/* The Fullname Here */}
                         <View className="flex-column pt-3 mb-4">
                             <Text className="text-md font-extrabold">Currency</Text>
-                            <View className="bg-slate-300 rounded-full mt-2">
+                            <View className="bg-slate-300 rounded-xl mt-2">
                                 <Picker
                                     className="px-5"
                                     mode='dialog'
@@ -118,7 +140,7 @@ export default function Complete() {
                         {/* The Email Here */}
                         <View className="flex-column pt-3 mb-4">
                             <Text className="text-md font-extrabold">Country</Text>
-                            <View className="bg-slate-300 rounded-full mt-2">
+                            <View className="bg-slate-300 rounded-xl mt-2">
                                 <Picker
                                     className="px-5"
                                     mode='modal'
@@ -142,7 +164,7 @@ export default function Complete() {
                         {/* The Password Here */}
                         <View className="flex-column pt-3 mb-4">
                             <Text className="text-md font-extrabold">Password</Text>
-                            <View className="bg-slate-300 rounded-full p-3 mt-2">
+                            <View className="bg-slate-300 rounded-xl p-3 mt-2">
                                 <TextInput
                                     onChangeText={value => passwordRef.current = value}
                                     className="px-4 font-semibold"
@@ -156,7 +178,7 @@ export default function Complete() {
                         {/* The Confirm Password Here */}
                         <View className="flex-column pt-3 mb-4">
                             <Text className="text-md font-extrabold">Confirm Password</Text>
-                            <View className="bg-slate-300 rounded-full p-3 mt-2">
+                            <View className="bg-slate-300 rounded-xl p-3 mt-2">
                                 <TextInput
                                     onChangeText={value => confirmPasswordRef.current = value}
                                     className="px-4 font-semibold"
@@ -168,7 +190,7 @@ export default function Complete() {
                         </View>
 
                         <View className="">
-                            <TouchableOpacity className="bg-blue-500 p-3 rounded-full mt-5" onPress={register}>
+                            <TouchableOpacity className="bg-purple-600 p-3 rounded-xl mt-5" onPress={register}>
                                 <Text className="text-center text-xl font-extrabold text-white uppercase">Register</Text>
                             </TouchableOpacity>
                         </View>

@@ -79,7 +79,7 @@ export const AuthContextProvider = ({ children }) => {
         }
     }
 
-    const UserRegister = async (fullname, username, email, phone, country, currency, password, conpassword) => {
+    const UserRegister = async (fullname, username, email, phone, gender, country, currency, password, conpassword) => {
         try {
 
             const formdata = new FormData();
@@ -88,6 +88,7 @@ export const AuthContextProvider = ({ children }) => {
             formdata.append('username', username);
             formdata.append('email', email);
             formdata.append('phone', phone);
+            formdata.append('gender', gender);
             formdata.append('country', country);
             formdata.append('currency', currency);
             formdata.append('conpassword', conpassword);
@@ -100,7 +101,7 @@ export const AuthContextProvider = ({ children }) => {
             return response.data;
 
         } catch (error) {
-            console.error('Error while logging in:', error);
+            console.error('Error while creating account:', error);
             return { err: "An error occured. Check your network and try again" };
         }
     }

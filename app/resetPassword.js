@@ -84,7 +84,7 @@ export default function resetPassword() {
 
                     <ScrollView showsVerticalScrollIndicator={false}>
                         <View className="px-5 flex-row">
-                            <View className="bg-blue-200 rounded-full p-2">
+                            <View className="bg-blue-200 rounded-xl p-2">
                                 <TouchableOpacity onPress={goback}>
                                     <Ionicons name='arrow-back' size={24} />
                                 </TouchableOpacity>
@@ -93,13 +93,14 @@ export default function resetPassword() {
 
                         <View className="items-center mt-3">
                             <Image
+                                style={{ width: 200, height: 30 }}
                                 source={require('../assets/images/sp_icon.png')}
-                                className="w-24 h-24"
+                                className=""
                             />
                         </View>
 
                         <View className="flex-1 justify-center mt-3 p-5">
-                            <Text className="text-3xl font-extrabold mb-2 text-blue-500 text-center capitalize">Reset password</Text>
+                            <Text className="text-3xl font-extrabold mb-2 text-purple-600 text-center capitalize">Reset password</Text>
                             <Text className="text font-normal mb-5  text-center">
                                 We have sent you your verification code to the email address provided.
                             </Text>
@@ -108,13 +109,14 @@ export default function resetPassword() {
                             {/* The OTP Here */}
                             <View className="flex-column pt-3 mb-4">
                                 <Text className="text-md font-extrabold">Password Reset Code</Text>
-                                <View className="bg-slate-300 rounded-full p-3 mt-2">
+                                <View className="bg-slate-300 rounded-xl p-3 mt-2">
                                     <TextInput
                                         onChangeText={value => otpRef.current = value}
                                         className="px-4 font-semibold"
                                         placeholder='Enter Reset code'
                                         placeholderTextColor={'grey'}
                                         selectionColor={'black'}
+                                        keyboardType='phone-pad'
                                     />
                                 </View>
                             </View>
@@ -122,7 +124,7 @@ export default function resetPassword() {
                             {/* The Password Here */}
                             <View className="flex-column pt-3 mb-4">
                                 <Text className="text-md font-extrabold">Password</Text>
-                                <View className="bg-slate-300 rounded-full p-3 mt-2">
+                                <View className="bg-slate-300 rounded-xl p-3 mt-2">
                                     <TextInput
                                         onChangeText={value => passwordRef.current = value}
                                         className="px-4 font-semibold"
@@ -136,7 +138,7 @@ export default function resetPassword() {
                             {/* The Confirm Password Here */}
                             <View className="flex-column pt-3 mb-4">
                                 <Text className="text-md font-extrabold">Confirm Password</Text>
-                                <View className="bg-slate-300 rounded-full p-3 mt-2">
+                                <View className="bg-slate-300 rounded-xl p-3 mt-2">
                                     <TextInput
                                         onChangeText={value => conpasswordRef.current = value}
                                         className="px-4 font-semibold"
@@ -149,13 +151,13 @@ export default function resetPassword() {
 
 
                             <View className="">
-                                <TouchableOpacity className="bg-blue-500 p-3 rounded-full mt-5" onPress={reset}>
+                                <TouchableOpacity className="bg-purple-600 p-3 rounded-xl mt-5" onPress={reset}>
                                     <Text className="text-center text-xl font-extrabold text-white uppercase">Reset Password</Text>
                                 </TouchableOpacity>
                             </View>
 
                             <View className="mt-6 items-center">
-                                <Text style={{ fontSize: 16 }}>No Email yet, <Text onPress={() => ResendForgotPasswordCode()} className="text-blue-500 font-semibold active:text-red-500">Resend email</Text> </Text>
+                                <Text style={{ fontSize: 16 }}>No Email yet, <Text onPress={() => ResendForgotPasswordCode()} className="text-purple-600 font-semibold active:text-red-500">Resend email</Text> </Text>
                             </View>
                         </View>
                     </ScrollView>

@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Sponge_Coin",
-    "slug": "Sponge_Coin",
+    "name": "CoinLink",
+    "slug": "CoinLink",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -48,9 +48,6 @@
     "extra": {
       "router": {
         "origin": false
-      },
-      "eas": {
-        "projectId": "6967b553-6dc1-4277-9c5e-dadb73244829"
       }
     }
   }

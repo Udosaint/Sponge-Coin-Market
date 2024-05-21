@@ -60,7 +60,7 @@ export default function forgetPassword() {
             <View className="flex-1 mt-10">
 
                 <View className="px-5 flex-row">
-                    <View className="bg-blue-200 rounded-full p-2">
+                    <View className="bg-blue-200 rounded-xl p-2">
                         <TouchableOpacity onPress={goback}>
                             <Ionicons name='arrow-back' size={24} />
                         </TouchableOpacity>
@@ -69,13 +69,14 @@ export default function forgetPassword() {
 
                 <View className="items-center mt-10">
                     <Image
+                        style={{ width: 200, height: 30 }}
                         source={require('../assets/images/sp_icon.png')}
-                        className="w-24 h-24"
+                        className=""
                     />
                 </View>
 
                 <View className="flex-1 justify-center mt-5 p-5">
-                    <Text className="text-3xl font-extrabold mb-2 text-blue-500 text-center capitalize">Forgot password</Text>
+                    <Text className="text-3xl font-extrabold mb-2 text-purple-600 text-center capitalize">Forgot password</Text>
                     <Text className="text font-normal mb-5  text-center">
                         Enter your email for the verification process. We will send you code to your email
                     </Text>
@@ -83,7 +84,7 @@ export default function forgetPassword() {
 
                     {/* The Fullname Here */}
                     <View className="flex-column pt-3 mb-4">
-                        <View className="bg-slate-300 rounded-full p-3 mt-2">
+                        <View className="bg-slate-300 rounded-xl p-3 mt-2">
                             <TextInput
                                 onChangeText={value => emailRef.current = value}
                                 className="px-4 font-semibold"
@@ -95,7 +96,7 @@ export default function forgetPassword() {
                     </View>
 
                     <View className="">
-                        <TouchableOpacity className="bg-blue-500 p-3 rounded-full mt-5" onPress={proceed}>
+                        <TouchableOpacity className="bg-purple-600 p-3 rounded-xl mt-5" onPress={proceed}>
                             <Text className="text-center text-xl font-extrabold text-white uppercase">Procced</Text>
                         </TouchableOpacity>
                     </View>

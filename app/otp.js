@@ -46,7 +46,7 @@ export default function otp() {
 
     const verify_account = async () => {
         if (!otpRef.current) {
-            Alert.alert("Verify Account", "Please enter your OTP in the fields");
+            Alert.alert("Account verify", "Please enter your OTP in the fields");
             return;
         }
 
@@ -59,7 +59,7 @@ export default function otp() {
             Alert.alert("Account verify", response.message);
             return router.replace('login');
         } else if (response.status == "error") {
-            Alert.alert("Forgot Password", response.message);
+            Alert.alert("Account verify", response.message);
             return;
         } else {
             Alert.alert("Account verify", response.message);
@@ -103,7 +103,7 @@ export default function otp() {
             <View className="flex-1 mt-10">
 
                 <View className="px-5 flex-row">
-                    <View className="bg-blue-200 rounded-full p-2">
+                    <View className="bg-blue-200 rounded-xl p-2">
                         <TouchableOpacity onPress={goback}>
                             <Ionicons name='arrow-back' size={24} />
                         </TouchableOpacity>
@@ -111,13 +111,14 @@ export default function otp() {
                 </View>
                 <View className="items-center mt-10">
                     <Image
+                        style={{ width: 200, height: 30 }}
                         source={require('../assets/images/sp_icon.png')}
-                        className="w-24 h-24"
+                        className=""
                     />
                 </View>
 
                 <View className="flex-1 justify-center mt-5 p-5">
-                    <Text className="text-3xl font-extrabold mb-2 text-blue-500 text-center">Verify Account</Text>
+                    <Text className="text-3xl font-extrabold mb-2 text-purple-600 text-center">Verify Account</Text>
                     <Text className="text-lg font-normal mb-5  text-center">
                         We have sent you the verification code to your registed email account.
                     </Text>
@@ -125,7 +126,7 @@ export default function otp() {
 
                     {/* The Fullname Here */}
                     <View className="flex-column pt-3 mb-4">
-                        <View className="bg-slate-300 rounded-full p-3 mt-2">
+                        <View className="bg-slate-300 rounded-xl p-3 mt-2">
                             <TextInput
                                 onChangeText={value => otpRef.current = value}
                                 className="px-4 font-semibold"
@@ -137,7 +138,7 @@ export default function otp() {
                     </View>
 
                     <View className="">
-                        <TouchableOpacity className="bg-blue-500 p-3 rounded-full mt-5" onPress={verify_account}>
+                        <TouchableOpacity className="bg-purple-600 p-3 rounded-xl mt-5" onPress={verify_account}>
                             <Text className="text-center text-xl font-extrabold text-white uppercase">Verify Account</Text>
                         </TouchableOpacity>
                     </View>
@@ -151,7 +152,7 @@ export default function otp() {
                         ) :
                             (
                                 <View className="mt-5 items-center">
-                                    <Text style={{ fontSize: 16 }}>No Email yet, <Text onPress={() => ResendVerifyEmail()} className="text-blue-500 font-semibold active:text-red-500">Resend email</Text> </Text>
+                                    <Text style={{ fontSize: 16 }}>No Email yet, <Text onPress={() => ResendVerifyEmail()} className="text-purple-600 font-semibold active:text-red-500">Resend email</Text> </Text>
                                 </View>
                             )
                     }

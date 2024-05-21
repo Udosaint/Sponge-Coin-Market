@@ -41,12 +41,12 @@ export default function OtherTransaction({ data }) {
                             <View className="flex-row items-center justify-between w-full">
                                 <View className='flex-row items-center space-x-5 '>
                                     <Ionicons
-                                        name={item.value.transc_type == "Send" ? "arrow-up-circle-outline" : "arrow-down-circle-outline"}
+                                        name={item.value.trans_type == "sell" ? "arrow-up-circle-outline" : ((item.value.trans_type == "send") ? "arrow-up-circle-outline" : "arrow-down-circle-outline")}
                                         size={30}
-                                        color={item.value.transc_type == "Send" ? "red" : "green"} />
+                                        color={item.value.trans_type == "sell" ? "red" : ((item.value.trans_type == "send") ? "red" : "green")} />
                                     <View className="items-start">
                                         <Text className="font-semibold text-lg" >{item.value.crypto_name}</Text>
-                                        <Text className="font-semibold text-md " >{item.value.transc_type}</Text>
+                                        <Text className="font-semibold text-md " >{item.value.trans_type}</Text>
                                     </View>
 
                                 </View>
@@ -107,13 +107,18 @@ export default function OtherTransaction({ data }) {
                                 <View className="border-b-2 border-blue-800 mt-2" />
                             </View>
                             <View className="mb-4">
+                                <Text>Price</Text>
+                                <Text className="font-extrabold text-lg">{user.symbol + formatCurrency(showmodal.finalamount)}</Text>
+                                <View className="border-b-2 border-blue-800 mt-2" />
+                            </View>
+                            <View className="mb-4">
                                 <Text>Transaction Type</Text>
-                                <Text className="font-extrabold text-lg">{showmodal.transc_type}</Text>
+                                <Text className="font-extrabold text-lg">{showmodal.trans_type}</Text>
                                 <View className="border-b-2 border-blue-800 mt-2" />
                             </View>
                             <View className="mb-4">
                                 <Text>Date</Text>
-                                <Text className="font-extrabold text-lg">{showmodal.date_added}</Text>
+                                <Text className="font-extrabold text-lg">{showmodal.date}</Text>
                                 <View className="border-b-2 border-blue-800 mt-2" />
                             </View>
                             <View className="mb-4">
@@ -127,7 +132,7 @@ export default function OtherTransaction({ data }) {
 
                             <View className="mb-4">
                                 <Text>Transaction ID</Text>
-                                <Text className="font-extrabold text-lg">{showmodal.transc_id}</Text>
+                                <Text className="font-extrabold text-lg">{showmodal.ref}</Text>
                             </View>
 
                         </View>

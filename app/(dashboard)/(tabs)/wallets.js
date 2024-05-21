@@ -1,9 +1,10 @@
-import { View, Text, FlatList, Image, TouchableOpacity, Alert, Modal, TextInput, RefreshControl } from 'react-native'
+import { View, Text, FlatList, Image, TouchableOpacity, Alert, Modal, TextInput, RefreshControl, KeyboardAvoidingView } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import MyLoading from '../../../components/MyLoading'
-import { UserCoinBalance, UserSendCoin, UserSwapCoin } from '../../../Api/ApiActions';
+import { CoinCap, UserBuyCoin, UserCoinBalance, UserSellCoin, UserSendCoin, UserSwapCoin } from '../../../Api/ApiActions';
 import { useAuth } from '../../../context/authcontext';
 import ActionSheet from 'react-native-actions-sheet';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function wallets() {
 
@@ -12,21 +13,52 @@ export default function wallets() {
     const [coinlist, setCoinlist] = useState([]);
 
     const showsendmodal = useRef(null);
-    const showswapmodal = useRef(null);
+    const showBuySellModal = useRef(null);
+    const showdetailmodal = useRef(null);
 
     const walletRef = useRef("");
     const coinamountRef = useRef("");
     const amountRef = useRef("");
 
-    const [modalswap, setModalswap] = useState([]);
-    const [swapto, setSwapto] = useState([]);
+    const [coinMode, setCoinMode] = useState([]);
     const [modalsend, setModalsend] = useState([]);
+
+    const [balance, setBalance] = useState("0.00");
+    const [balance2, setBalance2] = useState("0.00");
+
+    const [coinview, setCoinView] = useState([]);
+    const [percentage, setPercentage] = useState();
 
     const { user } = useAuth();
 
+    const [currentDateTime, setCurrentDateTime] = useState({
+        date: '',
+        time: ''
+    });
 
     useEffect(() => {
+
         GetCoinList();
+        const intervalId = setInterval(() => {
+            const now = new Date();
+
+            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            const month = monthNames[now.getMonth()];
+            const day = String(now.getDate()).padStart(2, '0');
+
+            const hours = now.getHours() % 12 || 12;
+            const amPm = now.getHours() >= 12 ? 'PM' : 'AM';
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+
+            const formattedDate = `${month} ${day}, ${String(hours).padStart(2, '0')}: ${minutes} ${amPm}`;
+
+            setCurrentDateTime({
+                date: formattedDate,
+            });
+        }, 1000);
+
+        return () => clearInterval(intervalId);
+
     }, [GetCoinList]);
 
 
@@ -46,50 +78,44 @@ export default function wallets() {
             return;
         } else if (response.status == "success") {
             //setStatus(false)
-            const dataArray = Object.entries(response.data).map(([key, value]) => ({ key, value }));
+            //const dataArray = Object.entries(response.data).map(([key, value]) => ({ key, value }));
             //setCoinlist(dataArray);
-            setCoinlist(response.data);
+            setCoinlist(response.assets);
+            setBalance(response.balance);
+            setBalance2(response.trade);
             return;
         }
     }
 
-    const getswapcoin = (mydata) => {
-        showswapmodal.current?.show();
-        const filtered = coinlist.filter((data) => data.symbol != mydata.symbol);
-        const data = filtered.map((val) => val)
-        setSwapto(filtered)
-        //setSwapto(data)
-        setModalswap(mydata)
-
-        //console.log()
-
-
+    const getCoinMode = (mode) => {
+        showdetailmodal.current?.hide();
+        showBuySellModal.current?.show();
+        setCoinMode(mode)
 
     }
 
 
-    const SwapCoin = async (swapFromPrice, swapFrom, swapToPrice, swapTo) => {
-
+    const handleBuyAction = async () => {
 
         if (!amountRef.current) {
-            Alert.alert("Swap Coin", "Enter the amount to swap")
+            Alert.alert(coinMode + " Coin", "Enter  amount ")
             return;
         }
 
-        const receive = ((swapFromPrice * amountRef.current) / swapToPrice).toFixed(2);
-
         setLoading(true);
-        showswapmodal.current?.hide();
-        const response = await UserSwapCoin(user.userid, amountRef.current, swapFrom, swapTo, receive)
+        showBuySellModal.current?.hide();
+        const response = await UserBuyCoin(user.userid, amountRef.current, coinview.name, user.currency)
+
+        //console.log(coinview.name);
         setLoading(false);
         if (response.err) {
-            Alert.alert("Swap Coin", "An error occured. Check your network and try again");
+            Alert.alert(coinMode + " Coin", "An error occured. Check your network and try again");
             return;
         } else if (response.status == "error") {
-            Alert.alert("Swap Coin", response.message);
+            Alert.alert(coinMode + " Coin", response.message);
             return;
         } else if (response.status == "success") {
-            Alert.alert("Swap Coin", response.message, [
+            Alert.alert(coinMode + " Coin", response.message, [
                 {
                     text: 'OKAY',
                     onPress: () => GetCoinList(),
@@ -102,9 +128,52 @@ export default function wallets() {
 
     }
 
+
+    const handleSellAction = async () => {
+
+        if (!amountRef.current) {
+            Alert.alert(coinMode + " Coin", "Enter  amount ")
+            return;
+        }
+
+        setLoading(true);
+        showBuySellModal.current?.hide();
+        const response = await UserSellCoin(user.userid, amountRef.current, coinview.name, user.currency)
+
+        //console.log(coinview.name);
+        setLoading(false);
+        if (response.err) {
+            Alert.alert(coinMode + " Coin", "An error occured. Check your network and try again");
+            return;
+        } else if (response.status == "error") {
+            Alert.alert(coinMode + " Coin", response.message);
+            return;
+        } else if (response.status == "success") {
+            Alert.alert(coinMode + " Coin", response.message, [
+                {
+                    text: 'OKAY',
+                    onPress: () => GetCoinList(),
+                    style: 'default'
+                }
+            ]);
+            return;
+
+        }
+
+    }
+
+
     const getsendcoin = (item) => {
+        showdetailmodal.current?.hide();
         showsendmodal.current?.show();
         setModalsend(item)
+
+    }
+
+    const getdetail = (coin) => {
+        showdetailmodal.current?.show();
+        setCoinView(coin)
+        CoinCapApi(coin.name)
 
     }
 
@@ -118,7 +187,7 @@ export default function wallets() {
         }
         setLoading(true);
         showsendmodal.current?.hide();
-        const response = await UserSendCoin(user.userid, coinamountRef.current, coin, walletRef.current)
+        const response = await UserSendCoin(user.userid, coinamountRef.current, coin, walletRef.current, user.currency)
         setLoading(false);
         if (response.err) {
             Alert.alert("Send Coin", "An error occured. Check your network and try again");
@@ -141,161 +210,229 @@ export default function wallets() {
     }
 
 
+    const CoinCapApi = async (coinname) => {
+        const response = await CoinCap(coinname);
+
+        setPercentage(parseFloat(response.data.changePercent24Hr).toFixed(2));
+    }
 
 
 
     return (
 
         <>
-            <View className="pt-5 bg-white flex-1">
-                <View className="px-5 mt-5">
-                    <FlatList
-                        refreshControl={<RefreshControl refreshing={false} onRefresh={GetCoinList} />}
-                        showsHorizontalScrollIndicator={false}
-                        data={coinlist}
-                        keyExtractor={item => item.name}
-                        className="overflow-visible"
-                        renderItem={({ item }) => {
-                            return (
-                                <TouchableOpacity
-                                    onPress={null}
-                                    className="p-5 w-full px-3 rounded-lg mr-2 drop-shadow-md
-                                                bg-slate-300 shadow-black mb-5"
-                                >
-                                    <View className="flex-row items-center justify-between">
-                                        <View className='flex-row items-center space-x-2'>
-                                            <Image
-                                                source={{ uri: item.link }}
-                                                loadingIndicatorSource={require('../../../assets/images/sp_icon.png')}
-                                                className="w-10 h-10"
-                                            />
-                                            <View className="items-start">
-                                                <Text className="font-semibold text-lg uppercase" >{item.name}</Text>
-                                                <Text className="font-semibold text-md " >{item.symbol}</Text>
+            <View className=" bg-white flex-1">
+                <KeyboardAvoidingView className="flex-1">
+                    <View style={{ zIndex: 1, }} className="border-b-4 border-yellow-200 dark:border-slate-900">
+                        <View
+                            className="flex-row justify-between bg-purple-900 dark:bg-purple-800  h-20 p-2 px-5 shadow-lg shadow-blue-900">
+                            <View>
+                                <Text className="text-white  text-lg font-bold mb-0">Assets Balance</Text>
+                                <Text className="text-gray-400 text-lg font-bold">{user.symbol + balance}</Text>
+                            </View>
+                            <View className="items-end">
+                                <Text className="text-white  text-lg text-end font-bold mb-0">Trade Balance</Text>
+                                <Text className="text-gray-400 text-lg text-end font-bold">{user.symbol + balance2}</Text>
+                            </View>
+                        </View>
+
+                    </View>
+                    <View className="flex-1 px-4 mb-1">
+                        <FlatList
+                            refreshControl={<RefreshControl refreshing={false} onRefresh={GetCoinList} />}
+                            showsHorizontalScrollIndicator={false}
+                            data={coinlist}
+                            keyExtractor={item => item.name}
+                            className="overflow-visible"
+                            contentContainerStyle={{ paddingTop: 8 }}
+                            renderItem={({ item }) => {
+                                return (
+                                    <TouchableOpacity
+                                        onPress={() => getdetail(item)}
+                                        className="p-3 w-full px-3 rounded-lg mr-2 drop-shadow-md
+                                                bg-slate-300 shadow-black mb-3"
+                                    >
+                                        <View className="flex-row items-center justify-between">
+                                            <View className='flex-row items-center space-x-2'>
+                                                <Image
+                                                    source={{ uri: item.link }}
+                                                    loadingIndicatorSource={require('../../../assets/images/sp_icon.png')}
+                                                    className="w-10 h-10 rounded-full"
+                                                />
+                                                <View className="items-start">
+                                                    <Text className="font-semibold text-md capitalize" >{item.updatedname}</Text>
+                                                    <Text className="font-semibold text-md " >{item.symbol}</Text>
+                                                </View>
+
                                             </View>
 
+                                            <View className="items-end">
+                                                <Text className="font-semibold text-lg  text-end" >{item.amount}</Text>
+                                                <Text className="font-bold text-md text-end" >{user.symbol + item.balance}</Text>
+                                            </View>
                                         </View>
 
-                                        <View className="items-end">
-                                            <Text className="font-semibold text-lg  text-end" >{item.amount}</Text>
-                                            <Text className="font-bold text-md text-end" >{user.symbol + item.balance}</Text>
+                                    </TouchableOpacity>
+
+                                )
+                            }}
+                        />
+
+                        {/* This is to show a detail of the coin */}
+                        <ActionSheet
+                            backgroundInteractionEnabled={false}
+                            gestureEnabled={true}
+                            snapPoints={50}
+                            indicatorStyle={{ backgroundColor: 'grey' }}
+                            ref={showdetailmodal}
+                        >
+                            <View className="px-3 p-5  mb-10">
+                                <View className="flex-row items-center justify-between rounded-lg mb-5 p-3 bg-gray-300">
+                                    <View className='flex-row items-center space-x-2'>
+                                        <Image
+                                            source={{ uri: coinview.link }}
+                                            loadingIndicatorSource={require('../../../assets/images/sp_icon.png')}
+                                            className="w-10 h-10 rounded-full"
+                                        />
+                                        <View className="items-start">
+                                            <Text className="font-semibold text-md capitalize text-gray-700" >{user.symbol + coinview.price}</Text>
+                                            <Text className="font-bold text-lg capitalize" >{coinview.updatedname}</Text>
                                         </View>
+
                                     </View>
 
-                                    <View className="flex-row items-center justify-between mt-5 space-x-4">
-                                        <TouchableOpacity onPress={() => getswapcoin(item)} className="bg-blue-500 p-3 rounded-md flex-1">
-                                            <Text className="font-semibold text-white text-center uppercase">Swap {item.symbol}</Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity onPress={() => getsendcoin(item)} className="bg-red-500 p-3 rounded-md flex-1">
-                                            <Text className="font-semibold text-white text-center uppercase">Send {item.symbol}</Text>
-                                        </TouchableOpacity>
+                                    <View className="items-end">
+                                        {percentage > 0 ? (
+                                            <View className="flex-row justify-center items-center" >
+                                                <Ionicons name="arrow-up-outline" size={18} color="green" />
+                                                <Text className="font-semibold text-lg  text-end text-green-600">{percentage} %</Text>
+                                            </View>
+                                        ) : (
+                                            <View className="flex-row justify-center items-center" >
+                                                <Ionicons name="arrow-down-outline" size={18} color="red" />
+                                                <Text className="font-semibold text-lg  text-end text-[#e13434]">{percentage} %</Text>
+                                            </View>
+                                        )}
+                                        <Text className="font-bold text-lg text-end text-yellow-600" >{currentDateTime.date}</Text>
                                     </View>
-
-
-                                </TouchableOpacity>
-
-                            )
-                        }}
-                    />
-                    <ActionSheet
-                        backgroundInteractionEnabled={false}
-                        gestureEnabled={true}
-                        snapPoints={50}
-                        indicatorStyle={{ backgroundColor: 'grey' }}
-                        ref={showsendmodal}
-                    >
-                        <View className="px-3 p-5 mt-5 mb-10">
-                            <Text className="font-semibold text-lg uppercase text-center"> send coin </Text>
-                            <View className="flex-column pt-3 mb-4">
-                                <Text className="text-md font-extrabold">Send Amount</Text>
-                                <View className="bg-slate-300 rounded-full p-3 mt-2">
-                                    <TextInput
-                                        onChangeText={value => coinamountRef.current = value}
-                                        className="px-4 font-semibold"
-                                        placeholder={'Enter amount of ' + modalsend.symbol + ' to send'}
-                                        placeholderTextColor={'grey'}
-                                        keyboardType='phone-pad'
-                                    />
                                 </View>
-                            </View>
-                            <View className="flex-column pt-3 mb-4">
-                                <Text className="text-md font-extrabold">Wallet Address</Text>
-                                <View className="bg-slate-300 rounded-full p-3 mt-2">
-                                    <TextInput
-                                        onChangeText={value => walletRef.current = value}
-                                        className="px-4 font-semibold"
-                                        placeholder={'Enter ' + modalsend.symbol + ' wallet address'}
-                                        placeholderTextColor={'grey'}
 
-                                    />
+                                <View className="flex-row items-center justify-between rounded-lg mb-5 p-3 bg-gray-300">
+                                    <View className='flex-row items-center space-x-2'>
+                                        <View className="items-start">
+                                            <Text className="font-semibold text-md capitalize text-gray-700" >Balance</Text>
+                                            <Text className="font-bold text-xl uppercase" >{coinview.amount + ' ' + coinview.symbol}</Text>
+                                        </View>
+                                    </View>
+
+                                    <View className="items-end">
+                                        <Text className="font-semibold text-md  text-end text-gray-700" >Value</Text>
+                                        <Text className="font-bold text-xl text-end" >{user.symbol + coinview.balance}</Text>
+                                    </View>
                                 </View>
-                            </View>
-                            <TouchableOpacity onPress={() => SendCoin(modalsend.symbol)} className='bg-blue-500 p-3 rounded-lg mt-5 items-center'>
-                                <Text className="text-lg text-white font-semibold uppercase">Send {modalsend.name}</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </ActionSheet>
 
 
-                    <ActionSheet
-                        backgroundInteractionEnabled={false}
-                        snapPoints={50}
-                        gestureEnabled={true}
-                        indicatorStyle={{ backgroundColor: 'grey' }}
-                        ref={showswapmodal}
-                    >
-                        {
-                            swapto.map((item, index) => (
-                                <View key={index} className="px-3 p-5 mt-5 mb-10">
-                                    <Text className="font-semibold text-lg uppercase text-center"> swap coin </Text>
-                                    <View className="flex-column pt-3 mb-4">
-                                        <Text className="text-md font-extrabold">Swap From</Text>
-                                        <View className="bg-slate-300 rounded-full p-3 mt-2">
-                                            <TextInput
-                                                value={modalswap.symbol}
-                                                className="px-4 font-semibold"
-                                                placeholderTextColor={'grey'}
-                                                editable={false}
-
-                                            />
-                                        </View>
-                                    </View>
-
-                                    <View className="flex-column pt-3 mb-4">
-                                        <Text className="text-md font-extrabold">Swap To</Text>
-                                        <View className="bg-slate-300 rounded-full p-3 mt-2">
-                                            <TextInput
-                                                value={item.symbol}
-                                                className="px-4 font-semibold"
-                                                placeholderTextColor={'grey'}
-                                                editable={false}
-
-                                            />
-                                        </View>
-                                    </View>
-
-                                    <View className="flex-column pt-3 mb-4">
-                                        <Text className="text-md font-extrabold">Swap Amount</Text>
-                                        <View className="bg-slate-300 rounded-full p-3 mt-2">
-                                            <TextInput
-                                                onChangeText={value => amountRef.current = value}
-                                                className="px-4 font-semibold"
-                                                placeholder={'Enter amount of ' + modalswap.symbol + ' to swap'}
-                                                placeholderTextColor={'grey'}
-                                                keyboardType='phone-pad'
-                                            />
-                                        </View>
-                                    </View>
-                                    <TouchableOpacity onPress={() => SwapCoin(modalswap.priceUsd, modalswap.symbol, item.priceUsd, item.symbol)} className='bg-blue-500 p-3 rounded-lg mt-5 items-center'>
-                                        <Text className="text-lg text-white font-semibold uppercase">swap {modalswap.symbol}</Text>
+                                <View className="flex-row items-center justify-between space-x-2">
+                                    <TouchableOpacity onPress={() => getCoinMode("Buy")}
+                                        className='flex-1 bg-green-600 p-3 rounded-lg mt-5 items-center'>
+                                        <Text className="text-md text-white font-semibold uppercase">Buy {coinview.symbol}</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => getCoinMode("Sell")}
+                                        className='flex-1 bg-red-600 p-3 rounded-lg mt-5 items-center'>
+                                        <Text className="text-md text-white font-semibold uppercase">Sell {coinview.symbol}</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => getsendcoin(coinview)}
+                                        className='flex-1 bg-purple-600 p-3 rounded-lg mt-5 items-center'>
+                                        <Text className="text-md text-white font-semibold uppercase">Send {coinview.symbol}</Text>
                                     </TouchableOpacity>
                                 </View>
-                            ))
-                        }
-                    </ActionSheet>
+                            </View>
+                        </ActionSheet>
+
+                        {/* This is to Send coin */}
+                        <ActionSheet
+                            backgroundInteractionEnabled={false}
+                            gestureEnabled={true}
+                            snapPoints={50}
+                            indicatorStyle={{ backgroundColor: 'grey' }}
+                            ref={showsendmodal}
+                        >
+                            <View className="px-3 p-5 mt-5 mb-10">
+                                <Text className="font-semibold text-lg uppercase text-center"> send coin </Text>
+                                <View className="flex-column pt-3 mb-4">
+                                    <Text className="text-md font-extrabold">Send Amount</Text>
+                                    <View className="bg-slate-300 rounded-xl p-3 mt-2">
+                                        <TextInput
+                                            onChangeText={value => coinamountRef.current = value}
+                                            className="px-4 font-semibold"
+                                            placeholder={'Enter amount of ' + modalsend.symbol + ' to send'}
+                                            placeholderTextColor={'grey'}
+                                            keyboardType='phone-pad'
+                                        />
+                                    </View>
+                                </View>
+                                <View className="flex-column pt-3 mb-4">
+                                    <Text className="text-md font-extrabold">Wallet Address</Text>
+                                    <View className="bg-slate-300 rounded-xl p-3 mt-2">
+                                        <TextInput
+                                            onChangeText={value => walletRef.current = value}
+                                            className="px-4 font-semibold"
+                                            placeholder={'Enter ' + modalsend.symbol + ' wallet address'}
+                                            placeholderTextColor={'grey'}
+
+                                        />
+                                    </View>
+                                </View>
+                                <TouchableOpacity onPress={() => SendCoin(modalsend.symbol)} className='bg-purple-600 p-3 rounded-lg mt-5 items-center'>
+                                    <Text className="text-lg text-white font-semibold uppercase">Send {modalsend.symbol}</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </ActionSheet>
+
+                        {/* This is to Buy and Sell coin */}
+                        <ActionSheet
+                            backgroundInteractionEnabled={false}
+                            snapPoints={50}
+                            gestureEnabled={true}
+                            indicatorStyle={{ backgroundColor: 'grey' }}
+                            ref={showBuySellModal}
+                        >
+                            <View className="px-3 p-5 mt-5 mb-10">
+                                <Text className="font-semibold text-lg uppercase text-center"> {coinMode + ' ' + coinview.symbol} </Text>
+
+                                <View className="flex-column pt-3 mb-4">
+                                    <Text className="text-md font-extrabold">Enter Amount</Text>
+                                    <View className="bg-slate-300 rounded-xl p-3 mt-2">
+                                        <TextInput
+                                            onChangeText={value => amountRef.current = value}
+                                            className="px-4 font-semibold"
+                                            placeholder={'Enter amount to ' + coinMode}
+                                            placeholderTextColor={'grey'}
+                                            keyboardType='phone-pad'
+                                        />
+                                    </View>
+                                </View>
+                                {
+                                    coinMode == "Buy" ? (
+                                        <TouchableOpacity
+                                            onPress={() => handleBuyAction()}
+                                            className='bg-green-600 p-3 rounded-lg mt-5 items-center'>
+                                            <Text className="text-lg text-white font-semibold uppercase">{coinMode + ' ' + coinview.symbol}</Text>
+                                        </TouchableOpacity>
+                                    ) : (
+                                        <TouchableOpacity
+                                            onPress={() => handleSellAction()}
+                                            className='bg-red-600 p-3 rounded-lg mt-5 items-center'>
+                                            <Text className="text-lg text-white font-semibold uppercase">{coinMode + ' ' + coinview.symbol}</Text>
+                                        </TouchableOpacity>
+                                    )
+                                }
+                            </View>
+                        </ActionSheet>
 
 
-                </View>
+                    </View>
+                </KeyboardAvoidingView>
 
             </View>
 

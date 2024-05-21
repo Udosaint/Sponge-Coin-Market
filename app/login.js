@@ -82,9 +82,11 @@ export default function Login() {
 
         if (response.err) {
             Alert.alert("Sign In", "An error occured. Check your network and try again");
+            setloading(false);
             return;
         } else if (response.error) {
             Alert.alert("Sign In", response.message);
+            setloading(false);
             return;
         } else if (response.error == "0") {
             Alert.alert("Sign In", response.message, [
@@ -100,6 +102,8 @@ export default function Login() {
                 },
 
             ]);
+
+            setloading(false);
             return;
         }
 
@@ -146,16 +150,17 @@ export default function Login() {
                     <ScrollView>
                         <View className="items-center mt-10">
                             <Image
+                                style={{ width: 200, height: 30 }}
                                 source={require('../assets/images/sp_icon.png')}
-                                className="w-24 h-24"
+                                className=""
                             />
                         </View>
                         <View className="flex-1 mt-5 p-5">
-                            <Text className="text-3xl font-extrabold mb-3 text-blue-500">{getuser != null ? "Welcome back " + getuser : "Login"}</Text>
+                            <Text className="text-3xl font-extrabold mb-3 text-purple-600">{getuser != null ? "Welcome back " + getuser : "Login"}</Text>
                             {/* The Username Here */}
                             <View className="flex-column pt-3 mb-4">
                                 <Text className="text-md font-extrabold">Username / Email</Text>
-                                <View className="bg-slate-300 rounded-full p-3 mt-2">
+                                <View className="bg-slate-300 rounded-xl p-3 mt-2">
                                     <TextInput
                                         //defaultValue={myuser}
                                         onChangeText={value => usernameRef.current = value}
@@ -171,7 +176,7 @@ export default function Login() {
                             {/* The Password Here */}
                             <View className="flex-column pt-3 mb-4">
                                 <Text className="text-md font-extrabold">Password</Text>
-                                <View className="bg-slate-300 rounded-full p-3 mt-2">
+                                <View className="bg-slate-300 rounded-xl p-3 mt-2">
                                     <TextInput
                                         onChangeText={value => passwordRef.current = value}
                                         className="px-4 font-semibold"
@@ -184,14 +189,14 @@ export default function Login() {
                             </View>
 
                             <View className="mb-5 items-end" >
-                                <Text className="text-md font-extrabold active:text-blue-500" onPress={forgetpassword}>Forget Password</Text>
+                                <Text className="text-md font-extrabold active:text-purple-600" onPress={forgetpassword}>Forget Password</Text>
                             </View>
 
-                            <TouchableOpacity className="bg-blue-500 p-3 rounded-full" onPress={loginHandle}>
+                            <TouchableOpacity className="bg-purple-600 p-3 rounded-xl" onPress={loginHandle}>
                                 <Text className="text-center text-xl font-extrabold text-white ">Log In</Text>
                             </TouchableOpacity>
                             <View className="flex-1 mt-10">
-                                <Text className="text-center text-md font-bold text-dark ">Don't Have account yet? <Text onPress={register} className="text-blue-500 font-extrabold">Register</Text></Text>
+                                <Text className="text-center text-md font-bold text-dark ">Don't Have account yet? <Text onPress={register} className="text-purple-600 font-extrabold">Register</Text></Text>
                             </View>
                         </View>
                     </ScrollView>

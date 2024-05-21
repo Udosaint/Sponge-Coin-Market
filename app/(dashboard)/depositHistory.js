@@ -115,7 +115,7 @@ export default function depositHistory() {
                                             </View>
 
                                             <View className="items-end text-end">
-                                                <Text className="font-semibold text-base items-end" >{user.symbol + formatCurrency(item.value.amount)}</Text>
+                                                <Text className="font-semibold text-base items-end" >{user.symbol + formatCurrency(item.value.finalamount)}</Text>
                                             </View>
 
                                         </View>
@@ -156,11 +156,11 @@ export default function depositHistory() {
 
                                     <View className="mb-4">
 
-                                        <Text className="font-extrabold text-lg">{user.symbol + formatCurrency(showmodal.amount)}</Text>
+                                        <Text className="font-extrabold text-lg">{user.symbol + formatCurrency(showmodal.finalamount)}</Text>
                                         <View className="border-b-2 border-blue-800 mt-2" />
                                     </View>
                                     <View className="mb-4">
-                                        <Text>Crypto</Text>
+                                        <Text>Payment Mode</Text>
                                         <Text className="font-extrabold text-lg">{showmodal.crypto_name}</Text>
                                         <View className="border-b-2 border-blue-800 mt-2" />
                                     </View>
@@ -190,7 +190,7 @@ export default function depositHistory() {
 
                                 </View>
 
-                                <TouchableOpacity onPress={closemodal} className='bg-blue-500 p-3 rounded-lg mt-5 items-center'>
+                                <TouchableOpacity onPress={closemodal} className='bg-purple-600 p-3 rounded-lg mt-5 items-center'>
                                     <Text className="text-lg text-white font-bold ">Close</Text>
                                 </TouchableOpacity>
                             </View>

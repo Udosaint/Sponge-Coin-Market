@@ -1,4 +1,4 @@
-import { View, Text, Image, TouchableOpacity, FlatList, ScrollView, TextInput, Alert } from 'react-native'
+import { View, Text, Image, TouchableOpacity, TextInput, Alert } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import { StatusBar } from 'expo-status-bar'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -6,13 +6,12 @@ import { Ionicons } from '@expo/vector-icons'
 import { Picker } from '@react-native-picker/picker'
 import MyColors from '../../constants/MyColors'
 import { useAuth } from '../../context/authcontext'
-import { GetAllCoin, GetCrypto, UserDeposit } from '../../Api/ApiActions'
+import { GetCrypto, UserDeposit } from '../../Api/ApiActions'
 import MyLoading from '../../components/MyLoading'
 import ActionSheet from 'react-native-actions-sheet'
 import * as Clipboard from 'expo-clipboard';
 
 import * as ImagePicker from 'expo-image-picker';
-import * as FileSystem from 'expo-file-system';
 import { router } from 'expo-router'
 import { WalletImage } from '../../Api/MyApi'
 export default function deposit() {
@@ -41,10 +40,10 @@ export default function deposit() {
 
     const getCoin = async () => {
         setLoading(true);
-        const response = await GetAllCoin();
+        const response = await GetCrypto();
         setLoading(false);
 
-        //console.log(response.data);
+        //console.log(response);
 
         if (response.err) {
             Alert.alert("Deposit", "An error occured. Check your network and try again");
@@ -106,7 +105,7 @@ export default function deposit() {
         }
 
         setLoading(true)
-        const response = await UserDeposit(user.userid, amountRef.current, crypto, proof);
+        const response = await UserDeposit(user.userid, amountRef.current, crypto, proof, user.currency);
         //console.log(response);
         setLoading(false)
         if (response.err) {
@@ -147,7 +146,7 @@ export default function deposit() {
                         {/* The Username Here */}
                         <View className="flex-column pt-3 mb-4">
                             <Text className="text-md font-extrabold">Select Crypto</Text>
-                            <View className="bg-slate-300 rounded-full px-4 p-0 mt-2">
+                            <View className="bg-slate-300 rounded-xl px-4 p-0 mt-2">
                                 <Picker
                                     className="px-5"
                                     mode='dialog'
@@ -170,7 +169,7 @@ export default function deposit() {
                         {/* The Password Here */}
                         <View className="flex-column pt-3 mb-4">
                             <Text className="text-md font-extrabold">Amount</Text>
-                            <View className="bg-slate-300 rounded-full p-3 mt-2">
+                            <View className="bg-slate-300 rounded-xl p-3 mt-2">
                                 <TextInput
                                     onChangeText={value => amountRef.current = value}
                                     className="px-4 font-semibold"
@@ -182,7 +181,7 @@ export default function deposit() {
                         </View>
 
 
-                        <TouchableOpacity onPress={handleDeposit} className="bg-blue-500 p-3 rounded-full mt-5" >
+                        <TouchableOpacity onPress={handleDeposit} className="bg-purple-600 p-3 rounded-xl mt-5" >
                             <Text className="text-center text-xl font-extrabold text-white ">Proceed</Text>
                         </TouchableOpacity>
 
@@ -202,14 +201,15 @@ export default function deposit() {
                                     <View className="flex-column pt-3 mb-4">
                                         <View className="items-center justify-center rounded-md p-3 mt-2">
                                             <Image source={{ uri: WalletImage + item.barcode }}
-                                                className=" w-52 h-52"
+                                                className=""
+                                                style={{ width: 300, height: 180 }}
                                             />
                                         </View>
                                     </View>
 
                                     <View className="flex-column pt-3 mb-4">
                                         <Text className="text-lg font-semibold text-center">
-                                            Make a deposit of {amountRef.current + item.crypto_name} to the wallet address.
+                                            Make a deposit of {amountRef.current + ' worth of ' + item.crypto_name} to the wallet address.
                                         </Text>
                                     </View>
 
@@ -224,7 +224,7 @@ export default function deposit() {
                                                     readOnly={true}
 
                                                 />
-                                                <TouchableOpacity onPress={() => copywallet(item.wallet_addr)} className=" flex-shrink bg-blue-500 p-2 rounded-md">
+                                                <TouchableOpacity onPress={() => copywallet(item.wallet_addr)} className=" flex-shrink bg-purple-600 p-2 rounded-md">
                                                     <Text className="font-semibold text-white">Copy</Text>
                                                 </TouchableOpacity>
                                             </View>
@@ -237,7 +237,7 @@ export default function deposit() {
                                         </TouchableOpacity>
                                     </View>
 
-                                    <TouchableOpacity onPress={ConfirmDeposit} className='bg-blue-500 p-3 rounded-lg mt-5 items-center'>
+                                    <TouchableOpacity onPress={ConfirmDeposit} className='bg-purple-600 p-3 rounded-lg mt-5 items-center'>
                                         <Text className="text-lg text-white font-semibold uppercase">confirm deposit</Text>
                                     </TouchableOpacity>
                                 </View>

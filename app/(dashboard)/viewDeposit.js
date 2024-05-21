@@ -18,7 +18,7 @@ export default function ViewDeposit() {
             <View className=" bg-zinc-400 p-5 rounded-md">
 
                 <View className="mb-4">
-                    <Text className="font-extrabold text-lg">{params.amount}</Text>
+                    <Text className="font-extrabold text-lg">{params.finalamount}</Text>
                     <View className="border-b-2 border-blue-800 mt-2" />
                 </View>
                 <View className="mb-4">

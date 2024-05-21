@@ -52,6 +52,8 @@ export default function RootLayout() {
 const RootLayoutNav = () => {
   const colorScheme = useColorScheme();
 
+  colorScheme == "light";
+
   const { isAuthenticated } = useAuth();
   const segments = useSegments();
 

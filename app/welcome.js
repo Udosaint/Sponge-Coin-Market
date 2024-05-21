@@ -2,7 +2,6 @@ import { View, Text, Image, TouchableOpacity, SafeAreaView } from 'react-native'
 import React from 'react'
 
 import { Router, router } from 'expo-router'
-import { country } from '../constants/country';
 
 export default function welcome() {
 
@@ -30,19 +29,19 @@ export default function welcome() {
                         <View className="flex-row items-center justify-center">
                             <Image
                                 source={require('../assets/images/sp_icon.png')}
-                                className="w-14 h-14"
+                                className="w-64 h-14"
 
                             />
-                            <Text className="text-2xl font-extrabold">Sponge<Text className="font-normal">Coin</Text></Text>
+
                         </View>
                     </View>
                     <Text className="text-2xl font-semibold mt-5 mb-5">Everything you need is in one place</Text>
                     <View className="mt-5 gap-3 justify-center ">
-                        <TouchableOpacity className="bg-blue-500 p-3 rounded-full" onPress={login}>
+                        <TouchableOpacity className="bg-purple-600 p-3 rounded-xl" onPress={login}>
                             <Text className="text-center text-xl font-bold text-white">Log In</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity className="border-blue-500 border-2 p-3 rounded-full" onPress={register}>
-                            <Text className="text-center text-xl font-bold text-dark">Create Account</Text>
+                        <TouchableOpacity className="border-purple-600 border-2 p-3 rounded-xl " onPress={register}>
+                            <Text className="text-center text-xl font-bold text-purple-600 dark:text-white">Create Account</Text>
                         </TouchableOpacity>
                     </View>
                 </View>

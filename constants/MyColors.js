@@ -1,4 +1,4 @@
 export default {
     btn: '',
-    primary: '#2196f3'
+    primary: '#6950e4'
 }

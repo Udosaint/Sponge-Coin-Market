@@ -11,7 +11,6 @@ export default function profile() {
 
     const [loading, setLoading] = useState(false);
     const [profile, setProfile] = useState([]);
-    const [coin, setCoin] = useState([]);
 
     const { user, logout } = useAuth();
 
@@ -33,11 +32,7 @@ export default function profile() {
         } else if (response.status == "error") {
             return;
         } else if (response.status == "success") {
-            const profileArray = Object.entries(response.profile).map(([index, value]) => ({ index, value }));
-            const coinArray = Object.entries(response.coinadetails).map(([index, value]) => ({ index, value }));
-            //Setdata(dataArray);
             setProfile(response.profile);
-            setCoin(response.coinadetails);
             return;
         }
     }
@@ -52,7 +47,6 @@ export default function profile() {
 
     }
 
-    //console.log(profile)
 
     // coin.map((item) => {
     //     console.log(item)
@@ -68,8 +62,8 @@ export default function profile() {
                     {
                         profile.map((item, index) => (
                             <View key={index}>
-                                <View className="flex-row space-x-4 items-center">
-                                    <View className="bg-blue-200 rounded-full">
+                                <View className="flex-row space-x-4 items-center mt-2">
+                                    <View className="bg-blue-200 rounded-xl">
                                         <Ionicons name="person-circle-outline" size={65} color="black" />
                                         {/* <Image
                                             source={require('../../../assets/images/sp_icon.png')}
@@ -77,7 +71,7 @@ export default function profile() {
                                     </View>
                                     <View>
                                         <Text className="text-lg font-semibold text-gray-900">{item.fullname}</Text>
-                                        <View className="flex-row bg-slate-700 items-center justify-start px-1  rounded-full">
+                                        <View className="flex-row bg-slate-700 items-center justify-start px-1  rounded-xl">
                                             <Ionicons name="at-outline" size={20} color="white" />
                                             <Text className="font-medium text-base text-white">{item.username}</Text>
                                         </View>
@@ -94,26 +88,26 @@ export default function profile() {
                                     shadowRadius: 5,
                                     elevation: 3,
                                 }}
-                                    className="flex bg-slate-100 mt-5 px-4 py-4  rounded-lg">
-                                    <View className="flex-row justify-between mb-5">
+                                    className="flex mt-5">
+                                    <View className="flex-row p-5  bg-slate-200 rounded-lg dark:bg-purple-800 justify-between mb-5">
                                         <Text className="text-base font-semibold">Email:</Text>
-                                        <Text>{item.email}</Text>
+                                        <Text className="text-base font-semibold">{item.email}</Text>
                                     </View>
-                                    {/* <View className="flex-row justify-between mb-5">
+                                    <View className="flex-row p-5  bg-slate-200 rounded-lg dark:bg-purple-800  justify-between mb-5">
                                         <Text className="text-base font-semibold">Gender:</Text>
-                                        <Text>{item.gender}</Text>
-                                    </View> */}
-                                    <View className="flex-row justify-between mb-5">
+                                        <Text className="text-base font-semibold">{item.gender}</Text>
+                                    </View>
+                                    <View className="flex-row p-5  bg-slate-200 rounded-lg dark:bg-purple-800 justify-between mb-5">
                                         <Text className="text-base font-semibold">Phone:</Text>
-                                        <Text>{item.phone}</Text>
+                                        <Text className="text-base font-semibold">{item.phone}</Text>
                                     </View>
-                                    <View className="flex-row justify-between mb-5">
+                                    <View className="flex-row p-5  bg-slate-200 rounded-lg dark:bg-purple-800 justify-between mb-5">
                                         <Text className="text-base font-semibold">Country:</Text>
-                                        <Text>{item.country}</Text>
+                                        <Text className="text-base font-semibold">{item.country}</Text>
                                     </View>
-                                    <View className="flex-row justify-between">
+                                    <View className="flex-row p-5  bg-slate-200 rounded-lg dark:bg-purple-800 justify-between">
                                         <Text className="text-base font-semibold">Currency:</Text>
-                                        <Text>{item.currency}</Text>
+                                        <Text className="text-base font-semibold">{item.currency}</Text>
                                     </View>
 
                                 </View>
@@ -122,30 +116,6 @@ export default function profile() {
                         ))
 
                     }
-
-
-
-
-                    <View className="flex bg-slate-100 mt-5 px-4 py-4 rounded-lg mb-5  shadow-yellow-950 drop-shadow-2xl">
-                        <Text className="text-blue-800 text-xl font-bold mb-5">Receiving Wallet</Text>
-
-                        {coin.map((item, index) => (
-                            <View className="mb-3" key={index}>
-                                <View className="flex-row items-center justify-between mb-2">
-                                    <Text className="text-base font-semibold">{item.name}</Text>
-                                    <TouchableOpacity className="bg-blue-400 p-2 rounded-lg">
-                                        <Text className="font-semibold">Copy</Text>
-                                    </TouchableOpacity>
-                                </View>
-                                <TextInput
-                                    className="bg-slate-200 rounded-lg px-4 p-2"
-                                    readOnly
-                                    value={item.wallet}
-                                />
-                            </View>
-                        ))}
-
-                    </View>
 
                 </ScrollView>
                 <View style={{ zIndex: 1 }} className="mt-5 mb-5  drop">

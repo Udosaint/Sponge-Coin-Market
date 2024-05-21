@@ -64,24 +64,24 @@ export default function register() {
 
     return (
         <>
-            <View className="flex-1 mt-1">
+            <View className="flex-1 mt-5">
 
                 <ScrollView>
 
-                    <View className="items-center mt-10">
+                    <View className="items-center mt-8">
                         <Image
+                            style={{ width: 200, height: 30 }}
                             source={require('../assets/images/sp_icon.png')}
-                            className="w-24 h-24"
-
+                            className=""
                         />
                     </View>
                     <View className="flex-1 mt-5 p-5">
-                        <Text className="text-3xl font-extrabold mb-3 text-blue-500">Create Account</Text>
+                        <Text className="text-3xl font-extrabold mb-3 text-purple-600">Create Account</Text>
 
                         {/* The Fullname Here */}
                         <View className="flex-column pt-3 mb-4">
                             <Text className="text-md font-extrabold">Fullname</Text>
-                            <View className="bg-slate-300 rounded-full p-3 mt-2">
+                            <View className="bg-slate-300 rounded-xl p-3 mt-2">
                                 <TextInput
                                     onChangeText={value => fullnameRef.current = value}
                                     className="px-4"
@@ -94,7 +94,7 @@ export default function register() {
                         {/* The Username Here */}
                         <View className="flex-column pt-3 mb-4">
                             <Text className="text-md font-extrabold">Username</Text>
-                            <View className="bg-slate-300 rounded-full p-3 mt-2">
+                            <View className="bg-slate-300 rounded-xl p-3 mt-2">
                                 <TextInput
                                     onChangeText={value => usernameRef.current = value}
                                     className="px-4"
@@ -107,7 +107,7 @@ export default function register() {
                         {/* The Email Here */}
                         <View className="flex-column pt-3 mb-4">
                             <Text className="text-md font-extrabold">Email</Text>
-                            <View className="bg-slate-300 rounded-full p-3 mt-2">
+                            <View className="bg-slate-300 rounded-xl p-3 mt-2">
                                 <TextInput
                                     onChangeText={value => emailRef.current = value}
                                     className="px-4"
@@ -120,7 +120,7 @@ export default function register() {
                         {/* The Email Here */}
                         <View className="flex-column pt-3 mb-4">
                             <Text className="text-md font-extrabold">Phone</Text>
-                            <View className="bg-slate-300 rounded-full p-3 mt-2">
+                            <View className="bg-slate-300 rounded-xl p-3 mt-2">
                                 <TextInput
                                     onChangeText={value => phoneRef.current = value}
                                     className="px-4"
@@ -131,7 +131,7 @@ export default function register() {
                         </View>
 
                         <View className="">
-                            <TouchableOpacity className="bg-blue-500 p-3 rounded-full mt-5" onPress={proceed}>
+                            <TouchableOpacity className="bg-purple-600 p-3 rounded-xl mt-5" onPress={proceed}>
                                 <Text className="text-center text-xl font-extrabold text-white ">Proceed</Text>
                             </TouchableOpacity>
                         </View>
@@ -139,7 +139,7 @@ export default function register() {
 
 
                         <View className="flex-1 mt-5">
-                            <Text className="text-center text-md font-bold text-dark ">Already Have account ? <Text onPress={login} className="text-blue-500 font-extrabold">Login</Text></Text>
+                            <Text className="text-center text-md font-bold text-dark ">Already Have account ? <Text onPress={login} className="text-purple-600 font-extrabold">Login</Text></Text>
                         </View>
                     </View>
                 </ScrollView>
