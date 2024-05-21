@@ -48,7 +48,11 @@
     "extra": {
       "router": {
         "origin": false
+      },
+      "eas": {
+        "projectId": "a7c83d19-833f-4712-a7b6-70e5c4c562b2"
       }
-    }
+    },
+    "owner": "udosaint"
   }
 }

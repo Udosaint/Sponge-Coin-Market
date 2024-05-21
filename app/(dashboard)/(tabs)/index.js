@@ -92,7 +92,7 @@ export default function index() {
                         </View>
 
                         <View className="px-3 mb-5">
-                            <Text className="font-semibold text-xl dark:text-white">Hi,  {user.username} 👋</Text>
+                            <Text className="font-semibold text-xl text-black dark:text-white">Hi,  {user.username} 👋</Text>
                         </View>
 
                         <View className=" bg-purple-900 dark:bg-purple-800 relative rounded-xl h-40 p-5 shadow-lg shadow-blue-900 sh">
@@ -104,7 +104,7 @@ export default function index() {
                             />
                             <View className="flex">
                                 <View className=" mb-3">
-                                    <Text className="text-white  text-lg font-bold mb-1">Total Balance</Text>
+                                    <Text className="dark:text-white text-white  text-lg font-bold mb-1">Total Balance</Text>
                                     <View className="flex-row items-center justify-between">
                                         <Text className="text-white text-2xl font-light">{user.symbol + balance}</Text>
                                         <Ionicons name="reload-circle" onPress={getDashboardBalance} size={30} color="white" />
