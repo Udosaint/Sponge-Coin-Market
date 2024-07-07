@@ -1,7 +1,7 @@
 import React from 'react'
 import axios from 'axios'
 
-import { BuyCoinLink, Coin, CoinBalance, CryptoAssets, CryptoBalance, DashboardLink, DepositHistoryLink, DepositLink, EarningLink, EstateHistoryLink, EstateLink, ForgotPasswordLink, InvestEstateLink, InvestHistoryLink, InvestLink, OtherTransactionLink, PlanLink, ProfileLink, ResetPasswordLink, SellCoinLink, SendCoinLink, SendOTPLink, SwapCoinLink, SwapTransactionLink, TransferLink, VerifyOTPLink, Wallet, WithdrawHistoryLink, WithdrawLink } from './MyApi'
+import { BuyCoinLink, Coin, CoinBalance, CryptoAssets, CryptoBalance, DashboardLink, DepositHistoryLink, DepositLink, EarningLink, EstateHistoryLink, EstateLink, ForgotPasswordLink, InvestEstateLink, InvestHistoryLink, InvestLink, OtherTransactionLink, PinOperation, PlanLink, ProfileLink, ResetPasswordLink, SellCoinLink, SendCoinLink, SendOTPLink, SwapCoinLink, SwapTransactionLink, TransferLink, VerifyOTPLink, Wallet, WithdrawHistoryLink, WithdrawLink } from './MyApi'
 
 
 export const SendVerifyEmail = async (email) => {
@@ -678,6 +678,84 @@ export const UserSellCoin = async (userid, amount, coin, currency) => {
 
 }
 
+
+export const UserCheckPin = async (userid, request, pin) => {
+
+    try {
+
+        const formdata = new FormData();
+
+        formdata.append('user_id', userid);
+        formdata.append('request', request);
+        formdata.append('pin', pin);
+
+
+        const config = {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        };
+        const response = await axios.post(PinOperation, formdata, config);
+        return response.data;
+
+
+
+    } catch (error) {
+        console.error('Error while buying crypto:', error);
+        return { err: "An error occured. Check your network and try again" };
+    }
+
+}
+
+export const UserCheckCot = async (userid, cotcode) => {
+
+    try {
+
+        const formdata = new FormData();
+
+        formdata.append('user_id', userid);
+        formdata.append('request', 'checkcot');
+        formdata.append('cotcode', cotcode);
+
+
+        const config = {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        };
+        const response = await axios.post(PinOperation, formdata, config);
+        return response.data;
+
+
+
+    } catch (error) {
+        console.error('Error while buying crypto:', error);
+        return { err: "An error occured. Check your network and try again" };
+    }
+
+}
+
+export const UserCheckTax = async (userid, request, taxcode) => {
+
+    try {
+
+        const formdata = new FormData();
+
+        formdata.append('user_id', userid);
+        formdata.append('request', request);
+        formdata.append('taxcode', taxcode);
+
+
+        const config = {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        };
+        const response = await axios.post(PinOperation, formdata, config);
+        return response.data;
+
+
+
+    } catch (error) {
+        console.error('Error while buying crypto:', error);
+        return { err: "An error occured. Check your network and try again" };
+    }
+
+}
 
 export const CoinCap = async (coin) => {
 

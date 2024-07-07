@@ -7,6 +7,8 @@
 //export const LINK = "http://192.168.1.133/BROKER/2024/New%20PROB/coinlinkcap.com%20-%20new/";
 export const LINK = "https://coinlinkcap.com/";
 
+export const SITE_EMAIL = "support@coinlinkcap.com";
+
 export const API = LINK + "api/";
 
 export const ImageLink = LINK + "";
@@ -76,3 +78,5 @@ export const ProfileLink = API + "profile";
 export const SwapTransactionLink = API + "swaphistory";
 
 export const OtherTransactionLink = API + "otherstransaction";
+
+export const PinOperation = API + "check";

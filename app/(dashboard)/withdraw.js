@@ -4,8 +4,10 @@ import MyLoading from '../../components/MyLoading'
 import { useAuth } from '../../context/authcontext';
 import MyColors from '../../constants/MyColors';
 import { Picker } from '@react-native-picker/picker';
-import { GetAllCoin, GetCrypto, UserWithdrawak, UserWithdrawal } from '../../Api/ApiActions';
+import { GetAllCoin, GetCrypto, UserCheckCot, UserCheckPin, UserCheckTax, UserWithdrawak, UserWithdrawal } from '../../Api/ApiActions';
 import { router } from 'expo-router';
+import ActionSheet from 'react-native-actions-sheet';
+import { API, SITE_EMAIL } from '../../Api/MyApi';
 
 export default function withdraw() {
 
@@ -19,6 +21,14 @@ export default function withdraw() {
 
     const amountRef = useRef('');
     const walletRef = useRef('');
+
+    const pin = useRef('');
+    const cotcode = useRef('');
+    const taxcode = useRef('');
+
+    const showpinmodal = useRef(null);
+    const showcotmodal = useRef(null);
+    const showtaxmodal = useRef(null);
 
 
     const HandleWithdraw = async () => {
@@ -44,6 +54,110 @@ export default function withdraw() {
                 {
                     text: 'OK',
                     onPress: () => router.push('(tabs)'),
+                    style: 'default',
+                },
+
+            ]);
+            return;
+        }
+
+    }
+
+
+    const LetCheckAction = () => {
+        if (!amountRef.current || !walletRef.current || crypto == '' || account == '') {
+            Alert.alert("Withdraw", "Please fill all fields");
+            return;
+        }
+
+        showcotmodal.current?.show();
+    }
+
+    const LetCheckTax = () => {
+        showtaxmodal.current?.show();
+    }
+
+    const LetCheckPin = () => {
+        showpinmodal.current?.show();
+    }
+
+    const CheckPin = async () => {
+        showpinmodal.current?.hide();
+        setLoading(true);
+        const response = await UserCheckPin(user.userid, 'checkpin', pin.current);
+        setLoading(false);
+
+        console.log(response);
+
+        if (response.err) {
+            Alert.alert("Account Pin", "An error occured. Check your network and try again");
+            return;
+        } else if (response.status == "error") {
+            Alert.alert("Account Pin", response.message);
+            return;
+        } else if (response.status == "success") {
+            Alert.alert("Account Pin", response.message, [
+                {
+                    text: 'Procced',
+                    onPress: () => HandleWithdraw(),
+                    style: 'default',
+                },
+
+            ]);
+            return;
+        }
+
+    }
+
+    const CheckCot = async () => {
+        //console.log(cotcode.current);
+        showcotmodal.current?.hide();
+        setLoading(true);
+        const response = await UserCheckCot(user.userid, cotcode.current);
+        setLoading(false);
+
+        console.log(response);
+
+        if (response.err) {
+            Alert.alert("COT Code", "An error occured. Check your network and try again");
+            return;
+        } else if (response.status == "error") {
+            Alert.alert("COT Code", response.message);
+            return;
+        } else if (response.status == "success") {
+            Alert.alert("COT Code", response.message, [
+                {
+                    text: 'Procced',
+                    onPress: () => LetCheckTax(),
+                    style: 'default',
+                },
+
+            ]);
+            return;
+        }
+
+    }
+
+
+    const CheckTax = async () => {
+        showtaxmodal.current?.hide();
+        setLoading(true);
+        const response = await UserCheckTax(user.userid, 'checktax', taxcode.current);
+        setLoading(false);
+
+        console.log(response);
+
+        if (response.err) {
+            Alert.alert("Tax Code", "An error occured. Check your network and try again");
+            return;
+        } else if (response.status == "error") {
+            Alert.alert("Tax Code", response.message);
+            return;
+        } else if (response.status == "success") {
+            Alert.alert("Tax Code", response.message, [
+                {
+                    text: 'Procced',
+                    onPress: () => LetCheckPin(),
                     style: 'default',
                 },
 
@@ -170,10 +284,112 @@ export default function withdraw() {
                             </View>
 
 
-                            <TouchableOpacity onPress={HandleWithdraw} className="bg-purple-600 p-3 rounded-xl mt-5" >
+                            <TouchableOpacity onPress={LetCheckAction} className="bg-purple-600 p-3 rounded-xl mt-5" >
                                 <Text className="text-center text-xl font-extrabold text-white ">Withdraw</Text>
                             </TouchableOpacity>
                         </View>
+
+                        {/* COt Code Checking */}
+                        <ActionSheet
+                            backgroundInteractionEnabled={false}
+                            snapPoints={100}
+                            gestureEnabled={true}
+                            indicatorStyle={{ backgroundColor: 'grey', padding: 5, marginTop: 5 }}
+                            ref={showcotmodal}
+                        >
+                            {
+                                <View className="px-5 p-5 mb-5">
+                                    <Text className="font-semibold text-lg uppercase text-center text-yellow-500 mb-5">COT Code Confirmation</Text>
+                                    <Text className="font-semibold text-md  text-center text-BLUE-500 mb-5">Contact support for your Cot Code {SITE_EMAIL}</Text>
+                                    <View className="flex-column pt-3 mb-4">
+                                        <Text className="text-md font-extrabold">Enter Cot code here</Text>
+                                        <View className="bg-slate-300 rounded-xl p-3 mt-2">
+                                            <TextInput
+                                                onChangeText={value => cotcode.current = value}
+                                                className="px-4 font-semibold"
+                                                placeholder='Enter cot code'
+                                                placeholderTextColor={'grey'}
+                                                keyboardType='phone-pad'
+                                                maxLength={6}
+                                            />
+                                        </View>
+                                    </View>
+
+                                    <TouchableOpacity onPress={() => CheckCot()} className='bg-purple-600 p-3 rounded-lg mt-5 items-center'>
+                                        <Text className="text-lg text-white font-semibold uppercase">check cot code</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            }
+                        </ActionSheet>
+
+                        {/* Tax Code Checking */}
+                        <ActionSheet
+                            backgroundInteractionEnabled={false}
+                            snapPoints={100}
+                            gestureEnabled={true}
+                            indicatorStyle={{ backgroundColor: 'grey', padding: 5, marginTop: 5 }}
+                            ref={showtaxmodal}
+                        >
+                            {
+                                <View className="px-5 p-5 mb-5">
+                                    <Text className="font-semibold text-lg uppercase text-center text-yellow-500 mb-5">Tax Code Confirmation</Text>
+                                    <Text className="font-semibold text-md  text-center text-BLUE-500 mb-5">Contact support for your Tax Code {SITE_EMAIL}</Text>
+
+                                    <View className="flex-column pt-3 mb-4">
+                                        <Text className="text-md font-extrabold">Enter Tax code here</Text>
+                                        <View className="bg-slate-300 rounded-xl p-3 mt-2">
+                                            <TextInput
+                                                onChangeText={value => taxcode.current = value}
+                                                className="px-4 font-semibold"
+                                                placeholder='Enter tax code'
+                                                placeholderTextColor={'grey'}
+                                                keyboardType='phone-pad'
+                                                maxLength={6}
+                                            />
+                                        </View>
+                                    </View>
+
+                                    <TouchableOpacity onPress={() => CheckTax()} className='bg-purple-600 p-3 rounded-lg mt-5 items-center'>
+                                        <Text className="text-lg text-white font-semibold uppercase">check tax code</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            }
+                        </ActionSheet>
+
+
+                        {/* Account Pin Checking */}
+                        <ActionSheet
+                            backgroundInteractionEnabled={false}
+                            snapPoints={100}
+                            gestureEnabled={true}
+                            indicatorStyle={{ backgroundColor: 'grey', padding: 5, marginTop: 5 }}
+                            ref={showpinmodal}
+                        >
+                            {
+                                <View className="px-5 p-5 mb-5">
+                                    <Text className="font-semibold text-lg uppercase text-center text-yellow-500 mb-5">Account Pin Confirmation</Text>
+                                    <Text className="font-semibold text-md  text-center text-BLUE-500 mb-5">Contact support for your Account Pin {SITE_EMAIL}</Text>
+
+                                    <View className="flex-column pt-3 mb-4">
+                                        <Text className="text-md font-extrabold">Enter pin here</Text>
+                                        <View className="bg-slate-300 rounded-xl p-3 mt-2">
+                                            <TextInput
+                                                onChangeText={value => pin.current = value}
+                                                className="px-4 font-semibold"
+                                                placeholder='Enter account pin'
+                                                placeholderTextColor={'grey'}
+                                                keyboardType='phone-pad'
+                                                maxLength={6}
+                                            />
+                                        </View>
+                                    </View>
+
+                                    <TouchableOpacity onPress={() => CheckPin()} className='bg-purple-600 p-3 rounded-lg mt-5 items-center'>
+                                        <Text className="text-lg text-white font-semibold uppercase">check account pin</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            }
+                        </ActionSheet>
 
                     </ScrollView>
                 </KeyboardAvoidingView>
