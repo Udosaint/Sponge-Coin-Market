@@ -300,7 +300,7 @@ export default function withdraw() {
                             {
                                 <View className="px-5 p-5 mb-5">
                                     <Text className="font-semibold text-lg uppercase text-center text-yellow-500 mb-5">COT Code Confirmation</Text>
-                                    <Text className="font-semibold text-md  text-center text-BLUE-500 mb-5">Contact support for your Cot Code {SITE_EMAIL}</Text>
+                                    <Text className="font-semibold text-md  text-center text-BLUE-500 mb-5">Contact support for your Cot Code {user.SITE_EMAIL}</Text>
                                     <View className="flex-column pt-3 mb-4">
                                         <Text className="text-md font-extrabold">Enter Cot code here</Text>
                                         <View className="bg-slate-300 rounded-xl p-3 mt-2">
@@ -333,7 +333,7 @@ export default function withdraw() {
                             {
                                 <View className="px-5 p-5 mb-5">
                                     <Text className="font-semibold text-lg uppercase text-center text-yellow-500 mb-5">Tax Code Confirmation</Text>
-                                    <Text className="font-semibold text-md  text-center text-BLUE-500 mb-5">Contact support for your Tax Code {SITE_EMAIL}</Text>
+                                    <Text className="font-semibold text-md  text-center text-BLUE-500 mb-5">Contact support for your Tax Code {user.SITE_EMAIL}</Text>
 
                                     <View className="flex-column pt-3 mb-4">
                                         <Text className="text-md font-extrabold">Enter Tax code here</Text>
@@ -368,7 +368,7 @@ export default function withdraw() {
                             {
                                 <View className="px-5 p-5 mb-5">
                                     <Text className="font-semibold text-lg uppercase text-center text-yellow-500 mb-5">Account Pin Confirmation</Text>
-                                    <Text className="font-semibold text-md  text-center text-BLUE-500 mb-5">Contact support for your Account Pin {SITE_EMAIL}</Text>
+                                    <Text className="font-semibold text-md  text-center text-BLUE-500 mb-5">Contact support for your Account Pin {user.SITE_EMAIL}</Text>
 
                                     <View className="flex-column pt-3 mb-4">
                                         <Text className="text-md font-extrabold">Enter pin here</Text>
